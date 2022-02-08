@@ -1,0 +1,74 @@
+Predicting location of transition metals in protein structures using 3DCNNs 
+
+
+
+Content: In this paper we describe a framework to predict a probability density map of the location
+of transition metals (e.g Zn) in protein structures using 3DCNNs. The network predicts a score per
+residue and our tool Metal3D allows to average those predictions to obtain a map of metal density
+across a protein structure. 
+The tool can be easily integrated into protein design software, can be used to add missing metal
+ligands to predicted structures using AlphaFold without relying on homology or to find hidden
+metallosites relevant to develop PPIs or metallodrugs. 
+
+
+## Stuff to cite in intro 
+
+Torng/Shroff 3DCNN bio stuff 
+Ananad DeepRank
+Correia surface studies Nat Methods 
+Chu Wang ClinVar metal paper? 
+General review on metal binding proteins 
+AlphaFold/RoseTTA Fold 
+MetalPDB/ZincBind 
+
+
+
+Design of metalloenzymes/metalloproteins Kuhlman/Hilvert Tezcan https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2836610/#!po=29.1667 
+Esras paper
+WardPaper  https://pubs.rsc.org/en/content/articlepdf/2015/sc/c5sc01065a
+
+LigVoxel
+
+
+Comparable tools: Biometall and others
+
+## Figures
+
+1. Sketch of the  two architectures MetalFinder1D and MetalFinder3D
+2. Probability map based on 2CBA, AlphaFold structure, Metal sensitivity
+3. Ablation study 
+4. MAD/Jaccard Index 
+5. Changes in probability for 2CBA mutants/ Kd plot 
+6. Metal3D processing steps figure 
+
+
+## Comparison 
+
+Metal1D
+Metal3D
+
+### BioMetall
+- available via github 
+- 10 - 90 sec prediction
+
+### IonCom
+- available via webserver and standalone, depends on I-Tasser
+- only predicts binding residues and not location 
+
+### Metsite psipred
+- available via webserver and as exectuble 
+- fast
+- only predicts binding residues 
+
+### MIB 
+- available via webserver
+- resoanably fast 
+- predicts location based on template 
+- Code? 
+
+### ZincBind 
+- available via webserver and api
+- predicts motif only and only using known motifs 
+- gives probability estimate
+
+
