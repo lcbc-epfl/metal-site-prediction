@@ -446,7 +446,7 @@ def SitesPredict(Chain, pdb_file, ppdb_ATOM, ProbMap, ScoreThreshold = 0.75, Sea
 
 
 
-def SortPredictions(pdb_file):
+def SortPredictions(pdb_file, ScoreThreshold = 0.75):
   """ Sorts predictions in the temporary output file of SitesPredict function
     xyz file formatting
     sites sorted based on score (final score for each site as #comment in xyz file)
@@ -455,6 +455,13 @@ def SortPredictions(pdb_file):
     ----------
     pdb_file : str
       name of pdb file to analyze
+    
+    ScoreThreshold : float
+      final re-scoring of sites excludes sites with score lower than
+      ScoreThreshold% of the highest-scored one
+      Default (0.75) resulted to be the best compromise 
+      between sites found and false positives for ZN testset             
+
      """
   console_output = sys.stdout     
   #read temporary OutFile    
@@ -472,7 +479,7 @@ def SortPredictions(pdb_file):
   #score of the site added as comment after the coordinates (EL x_site y_site z_site #site_score)
   PredictedSites = PredictedSites.sort_values(by=['Score'], ascending=False)
 
-  PredictedSites = PredictedSites[PredictedSites['Score']>.1*max(PredictedSites['Score'])] #site with score lower than 10% of higest one excluded
+  PredictedSites = PredictedSites[PredictedSites['Score']>(1-ScoreThreshold)*max(PredictedSites['Score'])] #site with score lower than ScoreThreshold% of higest one excluded
   Num_PredSites = len(PredictedSites)
   if(pdb_file[-4:] == '.pdb'):
       OutFile = open(pdb_file[:-4].replace('../','')+'_PredictedSites.xyz', 'w') 
