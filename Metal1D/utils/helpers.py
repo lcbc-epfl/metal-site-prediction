@@ -488,7 +488,6 @@ def SortPredictions(pdb_file, ScoreThreshold = 0.75):
   else:
       OutFile = open(pdb_file.replace('../','')+'_PredictedSites.xyz', 'w')
   OutFile.write(str(Num_PredSites)+'\n\n')
-  #OutFile.write(str(Num_PredSites)+'\n'+'Copy and paste the following line in VMD representation to select highest-scored residues used to compute predicted sites:\n'+VMD_output+'\n')
   for i in PredictedSites.index:
       OutFile.write(str(PredictedSites.loc[i]['Element'])+'\t'+str(PredictedSites.loc[i]['x_coord'])+'\t'+str(PredictedSites.loc[i]['y_coord'])+'\t'+str(PredictedSites.loc[i]['z_coord'])+'\t#'+str(PredictedSites.loc[i]['Score'])+'\n')
   OutFile.close()
