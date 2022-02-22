@@ -1,0 +1,30 @@
+---
+title: "Accurate prediction of metalsites using deep learning"
+keywords:
+  - metal
+  - protein engineering
+  - deep learning
+lang: en-US
+authors:
+  - name: Simon L. Dürr
+    orcid: 0000-0002-4304-8106
+    initials: SD
+    twitter: simonduerr
+    email: simon.duerr@epfl.ch
+    affiliations:
+      - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
+    symbol_str: "*"
+  - name: Andrea Levy
+    initials: AL
+    orcid: 0000-0003-1255-859X
+    symbol_str: "*"
+    affiliations:
+      - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
+  - name: Ursula Rothlisberger
+    initials: UR
+    orcid: 0000‐0002‐1704‐8591
+    email: ursula.roethlisberger@epfl.ch
+    symbol_str: "†"
+    affiliations:
+      - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
+ 
