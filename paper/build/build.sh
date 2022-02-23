@@ -43,7 +43,7 @@ DOCKER_EXISTS="$(command -v docker || true)"
 if [ "${BUILD_PDF:-}" != "false" ] && [ -z "$DOCKER_EXISTS" ]; then
   echo >&2 "Exporting PDF manuscript using WeasyPrint"
   if [ -L images ]; then rm images; fi  # if images is a symlink, remove it
-  ln -s content/images
+  ln -s content/images output/images
   pandoc \
     --data-dir="$PANDOC_DATA_DIR" \
     --defaults=common.yaml \

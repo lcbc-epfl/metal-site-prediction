@@ -13,16 +13,14 @@ authors:
     email: simon.duerr@epfl.ch
     affiliations:
       - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
-    symbol_str: "*"
   - name: Andrea Levy
     initials: AL
     orcid: 0000-0003-1255-859X
-    symbol_str: "*"
     affiliations:
       - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
   - name: Ursula Rothlisberger
     initials: UR
-    orcid: 0000‐0002‐1704‐8591
+    orcid: 0000-0002-1704-8591
     email: ursula.roethlisberger@epfl.ch
     symbol_str: "†"
     affiliations:
