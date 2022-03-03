@@ -7,7 +7,7 @@
   <meta name="author" content="Simon L. Dürr" />
   <meta name="author" content="Andrea Levy" />
   <meta name="author" content="Ursula Rothlisberger" />
-  <meta name="dcterms.date" content="2022-02-23" />
+  <meta name="dcterms.date" content="2022-03-02" />
   <meta name="keywords" content="metal, protein engineering, deep learning" />
   <title>Accurate prediction of metalsites using deep learning</title>
   <style>
@@ -53,7 +53,7 @@
 <small><em>
 This manuscript
 was automatically generated
-on February 23, 2022.
+on March 2, 2022.
 </em></small> -->
 <h2 id="authors">Authors</h2>
 <!--  -->
@@ -96,56 +96,85 @@ Ursula Rothlisberger <sup>1,†</sup></p>
 </ol>
 <h3 id="abstract">Abstract</h3>
 <h2 id="introduction">Introduction</h2>
-<p>Metalloproteins protein many biological functions [Percora review]?
+<p>Metalloproteins are ubiqutious in nature. Metal ions are also used in all major enzyme familes. The metals typically found in biological systems are the first and second row alkali and earth alkali metals and the first row transition metals. The most ubiqutious metal found in biologocial systems is Zinc (N Struc PDB Zinc XXX) which exclusively exists as the redox inert Zn(2+) cation with elctronic confgiguration [Ar]3d<sup>10</sup>. Zinc is found both in structural sites (e.g in Zinc finger proteins) or in up to trinuclear active sites. Zn2+ is an excellent lewis acid and is most often found in tetrahedral, pentavelent or octahedral coordination. In enzymes often a tetrahedral site is found that has an exogenous ligand (water, substrate) bound.</p>
+<p>Metalloproteins are well studied because of their wide ranging functions and their implication in many diseases.<span class="citation" data-cites="4sXp2sDw"><sup><a href="#ref-4sXp2sDw" role="doc-biblioref">1</a></sup></span> (Zn)-Metalloproteins are also interesting for use in industrial applications because existing metal ion binding sites can be rapidly tuned using Directed Evolution to catalyse a desired chemical reaction.<span class="citation" data-cites="oOm5j05D"><sup><a href="#ref-oOm5j05D" role="doc-biblioref">2</a></sup></span> In crystallography metals are also often added to the crystallization buffer as they can help in the formation of protein crystals overcoming the enthalpic cost of association of protein surfaces. Metal ion binding sites can also be used to rapdily engineer protein-protein interactions (PPI) and the hypothesis has been put forward that one orgin of macromolecular complexity is the superfacial binding of metal ions in early single domain proteins. Many metal ion binding sites are still found at interfaces.</p>
+<p>While simple metal ion binding sites can be rapidly engineered because intial coordination on a protein surface can for example be achieved by creating an i, i+4 di-histidine site [<span class="citation" data-cites="io987fKE"><a href="#ref-io987fKE" role="doc-biblioref">5</a></span>; DEGRADO 3SCC] the engineering of complex metal ion binding sites is considerably more difficult<span class="citation" data-cites="LY9UGI7"><sup><a href="#ref-LY9UGI7" role="doc-biblioref">6</a></sup></span> as such sites are often supported by a network of hydrogen bonds. A complication for computational design of metalloproteins is the unavailability of good non-bonded force fields for transition metals that accurately reproduce the coordination number and coordination distances which renders design e.g using Rosetta very difficult.<span class="citation" data-cites="LY9UGI7"><sup><a href="#ref-LY9UGI7" role="doc-biblioref">6</a></sup></span> To treat metal sites in proteins adequately quantum mechanical treatment such as in hybrid quantum mechanics/molecular mechanics simulations<span class="citation" data-cites="5Vxh8hay"><sup><a href="#ref-5Vxh8hay" role="doc-biblioref">7</a></sup></span> is needed whose computational cost is prohibitive. To perform design of metal ion binding sites with an arbitrary amount of coordination partners that does not use geometrical rules to place the metal we develop a deep learning based predictor that can predict the location of metal ions in proteins with atomic accuracy.</p>
+<p>Deep learning based approaches have been used in the field of protein research for a variety of applications such as protein structure prediction,<span class="citation" data-cites="yZfcMIwh"><sup><a href="#ref-yZfcMIwh" role="doc-biblioref">8</a></sup></span> prediction of identity of masked residues<span class="citation" data-cites="ls5kyxZ3 F7P74Etp 6szq3cwi"><sup><a href="#ref-ls5kyxZ3" role="doc-biblioref">10</a>–<a href="#ref-6szq3cwi" role="doc-biblioref">12</a></sup></span>), for ranking of docking poses,<span class="citation" data-cites="q224Kv8w yBhqGkBa"><sup><a href="#ref-q224Kv8w" role="doc-biblioref">13</a>,<a href="#ref-yBhqGkBa" role="doc-biblioref">14</a></sup></span> prediction of the location of complex organic ligands<span class="citation" data-cites="Gq7n6vhH mVGaXlum 13hjzBbje yBhqGkBa"><sup><a href="#ref-yBhqGkBa" role="doc-biblioref">14</a>–<a href="#ref-13hjzBbje" role="doc-biblioref">17</a></sup></span> and prediction of effects of mutations for stability and disease.<span class="citation" data-cites="4sXp2sDw"><sup><a href="#ref-4sXp2sDw" role="doc-biblioref">1</a></sup></span> Most of those models are based on 3D convolutional neural networks (CNN). Methods using geometric deep learning (on surfaces or graphs) are most recent and often only use approximate (AlphaFold IPA) or no sidechain information (EquiDock).</p>
+<p>In this work we present two metal ion location predictors. The deep learning based Metal3D predictor that operates on a voxelixed representation of a protein environment predicting a metal probability density over the input space. The distance based predictor Metal1D predicts the location of single probe metals mining information obtained from the <code>LINK</code> records of existing proteins.</p>
+<!-- Still missing sections -->
+<!-- 
+
+many biological functions [Percora review]? 
 As oneof the most prevalent transition metal cofactors in
 biological systems, it plays structural, signaling, and regulatory
 roles and is found in all six classes of enzymes (most commonly
-hydrolases</p>
-<p>Understanding where metals bind in biology is related to health,<span class="citation" data-cites="4sXp2sDw"><sup><a href="#ref-4sXp2sDw" role="doc-biblioref">1</a></sup></span> biocatalyis [Kuhlman, Hilvert] and PPIs [Tezcan].</p>
-<p>Starting with pioneering studies in the 1990 s,<span class="citation" data-cites="RJ44nj3R BeHu3IEC"><sup><a href="#ref-RJ44nj3R" role="doc-biblioref">2</a>,<a href="#ref-BeHu3IEC" role="doc-biblioref">3</a></sup></span>there have been notable successes inthe de novo design of functional metalloproteins, which arepredominantly based on four-helix bundle anda-helicalcoiled-coiled motifs with readily parametrizable structure.<span class="citation" data-cites="io987fKE"><sup><a href="#ref-io987fKE" role="doc-biblioref">4</a></sup></span></p>
-<p>Zinc exists as a redox-inert Zn(II) cation with an electron configuration of [Ar]3d10
+hydrolases
+
+
+
+Understanding where metals bind in biology is related to health [@doi:10.1038/s42256-019-0119-z], biocatalyis [Kuhlman, Hilvert] and PPIs [Tezcan]. 
+
+Starting with pioneering studies in the 1990 s,[@doi:10.1126/science.8346440;@doi:10.1146/annurev.biochem.68.1.779]there have been notable successes inthe de novo design of functional metalloproteins, which arepredominantly based on four-helix bundle anda-helicalcoiled-coiled motifs with readily parametrizable structure [@doi:10.1002/anie.202009226]. 
+
+
+Zinc exists as a redox-inert Zn(II) cation with an electron configuration of [Ar]3d10
 These properties with the lack of ligand field effects make zinc an excellent metal for different coordination numbers and binding geometries in different biological systems.
-Zinc can be found as an active site metal (cofactor) in all six IUBMB enzyme classes
+ Zinc can be found as an active site metal (cofactor) in all six IUBMB enzyme classes
 ### Deep learning on proteins
-Torng/Shroff 3DCNN bio stuff
+Torng/Shroff 3DCNN bio stuff 
 Ananad DeepRank
-Correia surface studies Nat Methods</p>
-<h3 id="enzymes">Enzymes</h3>
-<h3 id="interfaces">Interfaces</h3>
-<p>It has been hypothesized that some modern metalloproteins may have emerged through the metal-nucleated oligomerization of small peptides or protein domains, followed by the evolution of the resulting assemblies into stable, functional architecture.</p>
-<p>Metal-Templated Interface Redesign (MeTIR) ). These strategies, inspired by both the proposed evolutionary roles of metals and their prevalence in natural PPIs, take advantage of the favorable properties of metal coordination (bonding strength, directionality, and reversibility) to guide protein self-assembly with minimal design and engineering</p>
-<p>In order to circumvent the complexity of constructing extensive noncovalent interfaces, which are typically involved in natural PPIs</p>
-<h3 id="existing-approaches">Existing approaches</h3>
-<p>Computational predictors of metal-binding sites built on sequence analyses are mostly based on scanning the sequence of a target protein to identify those regions where amino acid patterns match a metal-binding site fingerprint. For zinc binding sites often two histidine spaced by one residue which allows to readily detect the motif are easy to detect. These predictors yield the identites of the coordinating residues.</p>
-<p>Structural detectors often used distance features to identify sites based on statistical mining in the protein databank. Predictors trained like this can identify highly preorganized motifs (e.g 4x Cys in close spatial proximity) but are often not very good at identifying weakly preorganized motifs. Current state of the art predictors (MIB, BioMetAll) use fragments/homology to predict the location of the metal or backbone preorganization predicting an approximate position of the metal that is less sensitive to the exact side chain geometry thus affording higher sensitivity to detect metal sites(BioMetAll). MIB<span class="citation" data-cites="1HMhB3vxM"><sup><a href="#ref-1HMhB3vxM" role="doc-biblioref">5</a></sup></span> uses the fragmentation transformation method to search for homologus sites in its database</p>
-<p>In our work we develop two new predictors primarily intended for zinc binding sites - Metal1D and Metal3D that are more accurate and sensitive than existing approaches in predicting metal ion binding sites. We evaluate their capability with respect to</p>
+Correia surface studies Nat Methods 
+
+
+### Enzymes
+
+### Interfaces
+It has been hypothesized that some modern metalloproteins may have emerged through the metal-nucleated oligomerization of small peptides or protein domains, followed by the evolution of the resulting assemblies into stable, functional architecture.
+
+
+Metal-Templated Interface Redesign (MeTIR) ). These strategies, inspired by both the proposed evolutionary roles of metals and their prevalence in natural PPIs, take advantage of the favorable properties of metal coordination (bonding strength, directionality, and reversibility) to guide protein self-assembly with minimal design and engineering
+
+In order to circumvent the complexity of constructing extensive noncovalent interfaces, which are typically involved in natural PPIs
+
+### Existing approaches
+
+Computational predictors of metal-binding sites built on sequence analyses are mostly based on scanning the sequence of a target protein to identify those regions where amino acid patterns match a metal-binding site fingerprint. For zinc binding sites often two histidine spaced by one residue which allows to readily detect the motif are easy to detect. These predictors yield the identites of the coordinating residues. 
+
+Structural detectors often used distance features to identify sites based on statistical mining in the protein databank.  Predictors trained like this can identify highly preorganized motifs (e.g 4x Cys in close spatial proximity) but are often not very good at identifying weakly preorganized motifs. Current state of the art predictors (MIB, BioMetAll) use fragments/homology to predict the location of the metal or backbone preorganization predicting an approximate position of the metal that is less sensitive to the exact side chain geometry thus affording higher sensitivity to detect metal sites(BioMetAll). MIB [@doi:10.1021/acs.jcim.6b00407] uses the fragmentation transformation method to search for homologus sites in its database
+
+
+In our work we develop two new predictors primarily intended for zinc binding sites - Metal1D and Metal3D that are more accurate and sensitive than existing approaches in predicting metal ion binding sites. We evaluate their capability with respect to  -->
 <h2 id="materials-and-methods">Materials and Methods</h2>
 <h3 id="dataset">Dataset</h3>
-<p>Zinc The average bond length corresponds to a resolution of ∼2.2 Å. Also, the deviation increases noticeably after the resolution exceeds 2.5 Å.<span class="citation" data-cites="Wt0ducot"><sup><a href="#ref-Wt0ducot" role="doc-biblioref">6</a></sup></span></p>
 <p>The input PDB files for training were obtained from the RCSB protein databank (Download 5. March 2021). We used a clustering at 30% sequence identity using MMSeqs2 as the input to largely remove sequence and structural redunancy in the input dataset.
-For each cluster we check whether a zinc is contained in one of the structures, whether the resolution of these structures is better than 2.5 A, the experimental method is X-Ray crystallography and whether the structure does not contain nucleic acids. If there are multiple structures fulfilling the criteria the highest resolution structure is used. Structures that fulfill all criteria except the zinc criterion are kept to for selectivity analysis for different metals.
-All structures larger than 3000 residues are discarded.
+For each cluster we check whether a zinc is contained in one of the structures, whether the resolution of these structures is better than 2.5 Å, the experimental method is X-Ray crystallography and whether the structure does not contain nucleic acids. If there are multiple structures fulfilling the criteria the highest resolution structure is used. Structures that fulfill all criteria except the zinc criterion are kept for the selectivity analysis for different metals.
+All structures larger than 3000 residues are discarded. We always use the first biological assembly as metals are often located at protein interfaces. All structures are filtered to only contain zinc and protein residues (including some non-standard amino acids MSE (CHECK which others)). If there are multiple models in the structure the first one is used.
 The train/val/test split was performed based on sequence identity using <code>easy-search</code> in mmseqs. All proteins that had no (partial) sequence overlap with any other protein in the dataset were put into the test/val set (85 proteins) which we further split into a test set of 59 structures and 36 structures in the validation set. The test set contained 1614 structures. (Reported as csv Supplemental Data 1).</p>
+<p>For the selectivity analysis the clusters that did not contain zinc were randomly sampled to extract about 25 structures per metal (Supplemntal Data 2) and all metal sites that had at minimum 3 unique protein ligands within 2.8 Å of the metal were used for the analysis to exclude any crystallization artefacts for the selectivity analyis. For the zinc analysis we used either all zinc ions contained in the structures or all that had at minimum 2 unique ligands within 2.8 Å of the metal.</p>
 <h3 id="metal-1d">Metal 1D</h3>
 <div id="fig:metal1dworkflow" class="fignos">
 <figure>
 <img src="images/metal1D_scheme_large.png" alt="" /><figcaption><span>Figure 1:</span> Workflow of Metal1D</figcaption>
 </figure>
 </div>
-<p>The statistical analysis performed is focuses on the <code>LINK</code> records present in deposited PDB structures. In particular, this section of a PDB file specifies the connectivity between zinc (or any other metal ion) and the amino acids of the protein, and each <code>LINK</code> record specifies one <code>LINK</code>age. After having extracted the <code>LINK</code> records, data were filtered, only considering X-ray structures with resolution better than 2.5 Å. Aiming to obtain a statistically significant sample, for proteins which present more than one deposited structure, only the best-resolution one was used. This selection is based on the MOLECULE record of the deposited structures.
-After the statistical filtering, a probability map is generated from the <code>LINK</code> records, extracting for each zinc ion the coordination experimentally observed. In this phase, <code>LINK</code> records involving only a single amino acid are excluded since they probably correspond to weak binding sites. In this phase, also <code>LINK</code> records containing water molecules are excluded. This is done for two reasons: in the first place, because it would be needed to restrict only to higher-resolution structure to have a reliable probability map including waters, which would drastically reduce the pool of structures used. Moreover, in the predicting phase, it would be needed to have protein structures with waters, which is not the general case due to experimental limitations and to difficulties to place water molecules a posteriori. Even if many tools are available, they are not able to handle the presence of metal ions. Due to these limitations, water molecules are considered only implicitly in this method.</p>
-<p>The probability map is used to predict the metal sites for a given protein structure. To make a prediction, each amino acid of the protein is scored. The score is assigned performing a geometrical serch from a reference point, defined as the coordinate of the most probable metal binding atom, within a search radius, considered as twice the typical distance between the metal ion and the binding atom of amino acids in proteins. This quantity is enlarged of an arbitrary factor, in order to be able to take into account deviations from the ideal cooridnation and give more flexibility to the search. In case of amino acids which present more than one atom which typically binds metals, such as Histidine, the mid-point is used and the search radius is enlarged accordingly.
-The score is assigned to each amino acid considering all the other reference points of other amino acids within the search radius, and summing the probabilities in the probability map for coordinations compatible with the one observed. In the ideal case, a score of <span class="math inline">\(1\)</span> would correspond to an amino acid surrounded by all possible coordinating amino acids observed in the probability map. In practice, scores result between <span class="math inline">\(0\)</span> and less than <span class="math inline">\(1\)</span>.</p>
-<p>Once all amino acids in the chain are scored, site predictions are made grouping the highest-scored amino acids in clusters, based on distance. In practice, highest-scored amino acids are the ones with a score within a given threshold of the highest-scored one. For each cluster, a site prediction is made as a weighted average between the coordinates of the reference point of each amino acid, using as weighting factor the amino acid score. In the case of clusters composed of only one amino acid, to be able anyway to perform a site prediction, a fictitious score equal to the single highest-scored amino acid in the cluster is assigned to the nearby amino acid (within the search radius) with the highest score. It is important to note that this amino acid was not in the highest-scored ones used to make the clusters, but in this way also for clusters with only one amino acid, a prediciton is made. The potential artefacts introduced by assigning a fictitious score to another amino acid is resolved by a final re-scoring of all the predicted sites.
-This final re-scoring also mitigates the errors which can be introduced by calculating the site simply as a weighted average. In particular, a final geometrical search is performed around each predicted site (within 0.6 Å the search radius, which as explained is about twice the typical metal-amino acid distance) and a score is now assigned to the site. This score is assigned in the same way as the amino acid scores, based on the probability map, and has the advantage of being able to sort the predicted metal sites based on their probability, according to the method. In this last re-scoring, sites with a probability lower than a certain threshold with respect to the highest-scored one, are excluded, in order to focus only on predictions with the highest probability.</p>
+<p>The statistical analysis performed is focuses on the <code>LINK</code> records present in deposited PDB structures. In particular, this section of a PDB file specifies the connectivity between zinc (or any other metal ion) and the amino acids of the protein, and each <code>LINK</code> record specifies one <code>LINK</code>age.
+After the statistical filtering, a probability map is generated from the <code>LINK</code> records, extracting for each zinc ion the coordination experimentally observed. In this phase, <code>LINK</code> records involving only a single amino acid are excluded since they probably correspond to weak binding sites. In this phase, also <code>LINK</code> records containing water molecules are excluded. This is done for two reasons: in the first place, because it would be needed to restrict only to higher-resolution structure to have a reliable probability map including waters, which would drastically reduce the pool of structures used.
+<!-- Reduce wordy sentence  -->
+Moreover, for predictions water molecules need to be present. The quality of modeled water molecules in crystal structures varies [REF], other experimental or computational methods such as alpha fold do not provide water models and it is difficult to add water molecules a posteriori [REF]. Even if many tools are available, they are not able to handle the presence of metal ions. Due to these limitations, water molecules are considered only implicitly in this method.</p>
+<p>The learned probability map is used to predict the metal sites for a given protein structure. To make a prediction, each amino acid of the protein is scored. The score is assigned performing a geometrical search from a reference point, defined as the coordinate of the most probable metal binding atom, within a search radius, considered as twice the typical distance between the metal ion and the binding atom of amino acids in proteins. This quantity is enlarged of an arbitrary factor, in order to be able to take into account deviations from the ideal cooridnation and give more flexibility to the search. In case of amino acids which present more than one atom which typically bind metals, such as Histidine, the mid-point is used and the search radius is enlarged accordingly.
+The score is assigned to each amino acid considering all the other reference points of other amino acids within the search radius, and summing the probabilities in the probability map for coordinations compatible with the one observed. In the ideal case, a score of 1 would correspond to an amino acid surrounded by all possible coordinating amino acids observed in the probability map. In practice, scores result between 0 and less than 1.</p>
+<p>Once all amino acids in the chain are scored, site predictions are made grouping the highest-scored amino acids in clusters, based on distance. In practice, highest-scored amino acids are the ones with a score within a given threshold of the highest-scored one. For each cluster, a site prediction is made as a weighted average between the coordinates of the reference point of each amino acid, using as weighting factor the amino acid score. In the case of clusters composed of only one amino acid, to be able to place the metal, a fictitious score equal to the single highest-scored amino acid in the cluster is assigned to the nearby amino acid (within the search radius) with the highest score. <!-- Did you try using some kind of bond vector ? I imagine this approach will have difficulty differntiating Ne Nd in histidines-->
+It is important to note that this amino acid was not in the highest-scored ones used to make the clusters, but in this way also for clusters with only one amino acid, a prediction is made. <!--Rphrase this, I don't understand what you mean-->
+The potential artefacts introduced by assigning a fictitious score to another amino acid is resolved by a final re-scoring of all the predicted sites.
+This final re-scoring also mitigates the errors which can be introduced by calculating the site simply as a weighted average. In particular, a final geometrical search is performed around each predicted site (within 0.6 Å <!-- of?? --> the search radius, which as explained is about twice the typical metal-amino acid distance) and a score is now assigned to the site. This score is assigned in the same way as the amino acid scores, based on the probability map, and has the advantage of being able to sort the predicted metal sites based on their probability, according to the method. In this last re-scoring, sites with a probability lower than a certain threshold with respect to the highest-scored one, are excluded, in order to focus only on predictions with the highest probability.</p>
 <h3 id="metal-3d">Metal 3D</h3>
 <h4 id="voxelization">Voxelization</h4>
-<p>We used the moleculekit python library<span class="citation" data-cites="q2gxO5bP mVGaXlum"><sup><a href="#ref-q2gxO5bP" role="doc-biblioref">7</a>,<a href="#ref-mVGaXlum" role="doc-biblioref">8</a></sup></span> to voxelize the input structures into 3D grids. 8 different input channels are used aromatic, hydrophobic, positive ionizable, negative ionizable, hbond donor, hbond acceptor, occupancy and metal ion binding site chain were used. For the target box only zinc ions were used. The target tensor was discretized setting any voxel above 0.05 to 1 (true location of zinc), all other to 0 (no zinc). We used a box size of 20 Å centered on the CA residue of a residue, rotating each box randomly. The voxel grid used a 1 Å resolution.
-For all structures selected for the respective sets we partionied the residues of the protein into residues within 12 Å of a zinc ion and ones not within 12 Å of a zinc. To make a balanced set of examples we voxelize all residues that are close to a zinc and an equal amount of residues randomly drawn from the non-zinc binding residues.
+<p>We used the moleculekit python library<span class="citation" data-cites="q2gxO5bP mVGaXlum"><sup><a href="#ref-mVGaXlum" role="doc-biblioref">16</a>,<a href="#ref-q2gxO5bP" role="doc-biblioref">19</a></sup></span> to voxelize the input structures into 3D grids. 8 different input channels are used: aromatic, hydrophobic, positive ionizable, negative ionizable, hbond donor, hbond acceptor, occupancy and metal ion binding site chain were used. The scores are assigned using AutoDockVina atom names and a boolean mask. For each atom matching one of the categories a gaussian distribution wheighted by the vdW radius of the atom is used to assign the voxel value. For the target box only zinc ions were used. The target tensor was discretized setting any voxel above 0.05 to 1 (true location of zinc), all other to 0 (no zinc). We used a box size of 20 Å centered on the CA residue of a residue, rotating each box randomly. The voxel grid used a 1 Å resolution. Any alternative conformations modeled were discarded keeping only the highest occupancy.
+For all structures selected for the respective sets we partioned the residues of the protein into residues within 12 Å of a zinc ion and ones not within 12 Å of a zinc. A single zinc site will therefore be present many times in the dataset but each time translated to the To make a balanced set of examples we voxelize all residues that are close to a zinc and an equal amount of residues randomly drawn from the non-zinc binding residues.
 The environments are precomputed and stored in HDF5 files for concurrent access during training. In total 266283 environements were computed for the training set, XXX for the test set, XXX for the validation set.</p>
 <h4 id="model-training">Model training</h4>
 <p>We used PyTorch 1.10 to train the model. All layers of the network are convolutional layers with filter size 3 Å except for the second layer where 4 Å size is used and the fifth layer where a 16 Å filter is used to capture long range interactions. We use zero padding to keep the size of the boxes constant. Models were trained on a workstation with 2x NVIDIA GTX2070 GPU and 28 CPU cores.
-Binary Cross Entropy<span class="citation" data-cites="hchMCnC1"><sup><a href="#ref-hchMCnC1" role="doc-biblioref">9</a></sup></span> loss is used to train the model. The rectified linear unit (ReLU) non-linearity is used except for the last layer which uses a sigmoid function which yields the probability for zinc per voxel.
+Binary Cross Entropy<span class="citation" data-cites="hchMCnC1"><sup><a href="#ref-hchMCnC1" role="doc-biblioref">20</a></sup></span> loss is used to train the model. The rectified linear unit (ReLU) non-linearity is used except for the last layer which uses a sigmoid function which yields the probability for zinc per voxel.
 A dropout layer (p = 0.2) was used between the 5th and 6th layer.
 The network was trained using AdaDelta, a stepped learning rate (lr=1.0, ɣ=0.7) a batch size of 500 and 12 epochs to train.</p>
 <h4 id="hyperparameter-tuning">Hyperparameter tuning</h4>
@@ -157,33 +186,30 @@ The network was trained using AdaDelta, a stepped learning rate (lr=1.0, ɣ=0.7)
 <li>gamma: 0.5, 0.7, 0.8, 0.9</li>
 <li>batch size: 128, 200, 500</li>
 </ul>
+<h4 id="grid-averaging">Grid Averaging</h4>
+<p>Predictions for a complete protein are obtained by voxelizing select residues of the protein (default all cysteines, histidines, aspartates, glutamates) and averaging the boxes using a global grid. The global grid is obtained by computing the bounding box of all points. In between the bounding box a regular grid at 1 A intervals is computed. Using the KD-Tree implementation in scipy for each grid point all close points within 1 A are taken and the voxel value is set as the mean probability from all points. The output is saved as cube file.</p>
 <h4 id="hca2-mutants">HCA2 mutants</h4>
-<p>Richardson Rotamer library
-EVOLVE-ddG
-implicit solvent, double deprotonated histidines for rotamer optimization
-Zinc cationic dummy model</p>
+<p>The HCA2 mutants were extracted from Ref<span class="citation" data-cites="doi:Fierke"><sup><span class="citeproc-not-found" data-reference-id="doi:Fierke"><strong>???</strong></span> etc</sup></span> and the crystal structure 2CBA<span class="citation" data-cites="doi"><sup><span class="citeproc-not-found" data-reference-id="doi"><strong>???</strong></span></sup></span> was used. The zinc was modeled using the zinc cationic dummy model forcefield<span class="citation" data-cites="pchdLF0k"><sup><a href="#ref-pchdLF0k" role="doc-biblioref">21</a></sup></span> and we verified that energy minization produced the correct coordiantion environment. The richardson rotamer library was used with the EVOLVE-ddG energy function to compute the most stable rotamer for a given mutation. The lowest-energy mutant was used for the prediction of the location of metals.</p>
+<h4 id="evaluation">Evaluation</h4>
+<p>To evaluate the trained model we monitored how accurately the model predicts the metal density of the test set. We used a discretized version of the jaccard index setting each voxel either as 0 (no metal) or 1 (zinc present). We tested multiple different decision boundaries 0.5, 0.6, 0.75, 0.90 and also comparing a slightly smaller centered box to remove any spurious density at the box edges.</p>
 <h2 id="results">Results</h2>
+<p>The dataset used for all training and analysis was obtained from the RCSB Protein Data Bank.<span class="citation" data-cites="doi:REF"><sup><span class="citeproc-not-found" data-reference-id="doi:REF"><strong>???</strong></span></sup></span> We used the clustered PDB at 30% sequence identity to remove similar structures and used the highest resolution structure from each cluster that contained a zinc, did not contain DNA/RNA and had resolution &lt; 2.5 Å. In case no structure was found the cluster was discarded for training of the models..</p>
 <h3 id="metal1d">Metal1D</h3>
-<!---
-The starting PDB structures used are the ones in the training set, discuss what's the best way to describe it: repeat what is also said later for Metal3D?  
--->
-<p>The statistical analysis performed is focuses on the <code>LINK</code> records present in deposited PDB structures. LINK data were filtered to obtain a statistically significant sample, restricting only to X-ray structures with resolution better than 2.5 Å, and considering only the best-resolution structure for proteins presenting more than one deposited structure. This filtered sample is used to extract a probability map for the coordinating amino acids, which is used to predict metal sites: for a given protein structure, each amino acid of the protein is scored based on the probability map, performing a geometrical serch around the amino acid. For Zn(II), the average <code>LINK</code> length resulted 2.2 ± 0.2 Å, and the default search radius was then set to 5.5 Å.</p>
-<p>Once all amino acids in the chain are scored, site predictions are made grouping the highest-scored amino acids in clusters, based on distance. For each cluster, a site prediction is made as a weighted average between the coordinates of the reference point of each amino acid, using as weighting factor the amino acid score. A final re-scoring is performed, now assigning a score to the predicted locations for the sites, based on surrounding amino acids, in order to sort the predictions based on the probability, according to the method. This final re-scoring process also mitigates the possible artefacts originated by the prediction phase, excluding sites which are placed in positions with a low-probable coordinating environment.</p>
-<!---
-Not sure if this  two paragraphs are too long for the results section, I tried to highlight how the method works without focusing on the details (explained in the method section), but may need to make it shorter
--->
+<p>The statistical analysis for the distance based model uses the <code>LINK</code> records present in deposited PDB structures. This training set structures are used to extract a probability map for the coordinating amino acids. In inference mode the map is used to predict metal sites: for a given protein structure, each amino acid of the protein is scored based on the probability map, performing a geometrical serch around the amino acid. For Zn(II), the average <code>LINK</code> distance was 2.2 ± 0.2 Å, and the default search radius was set to 5.5 Å.</p>
+<p>Once all amino acids in the chain are scored, site predictions are made grouping the highest-scored amino acids in clusters, based on distance <!--what is the cutoff-->. For each cluster, a site prediction is made as a weighted average between the coordinates of the reference point of each amino acid, using as weighting factor the amino acid score. A final re-scoring is performed, now assigning a score to the predicted locations for the sites, based on surrounding amino acids, in order to sort the predictions based on the probability. This reduces possible artefacts originating from sites which are placed in positions with a low-probable coordinating environment.</p>
+The Metal1D predictor is available as self-contained notebook on Google Colab.
 <script src="https://gist.github.com/lzhou1110/2a30a81cb8c175514ed627bc18016774.js"></script>
 <h3 id="metal3d">Metal3D</h3>
-<p>The model was trained using a train/test/val split based on sequence identity. We used the MMSeqs2 clustered PDB at 30% sequence identity and used the highest resolution structure from each cluster that contained a zinc, did not contain DNA and had resolution &lt; 2.5 Å. In case no structure was found the cluster was discarded.</p>
-<p>The training examples were sampled from the chosen structure by choosing a balanced number of boxes from each protein that contained or did not contain a zinc. Each box was randomly rotated such that the model is insensitive to rotation.</p>
-<p>Metal3D predicts a per residue score that can then be averaged over all residues or used individually (e.g for protein design).</p>
-<p>Hyperparameter tuning using Ray tune</p>
-<p>Evaluation of quality of predictions per box using discretized Jaccard Score (similarity of two sets). We noticed that at the edges often spurious density is predicted .</p>
+<p>The training examples were sampled from the chosen structure by choosing a balanced number of boxes from each protein that contain or do not contain a zinc within 12 A of the central residue. Each box was randomly rotated such that the model is insensitive to rotation. Metal3D predicts a per residue probability density that can then be averaged over all residues or used individually (e.g for protein design).</p>
+<!-- Hyperparameter tuning using Ray tune -->
+<p>We evaluated the of quality of predictions per box using the discretized Jaccard Score (similarity of two sets) on the testset. We noticed that at the edges often spurious density is predicted so we evaluated the similarity of the test set boxes and the prediced boxes removing the outer edge of the boxes.
+[<a href="#fig:jaccard">2</a>] shows that the similarity of the boxes does not depend much on the cutoff chosen with higher cutoff yielding slightly higher jaccard similarity values (0.02 - 0.04 difference between 0.5 and 0.9). Reducing the size of the analzyed boxes (i.e trimming of the edges) has a much more drastic influence on the jaccard score increasing the jaccard similarity from ⩰ 0.6 to ~ 0.86 showing that the metal density close to the central residue is much better predicted than at the box edges.</p>
 <div id="fig:jaccard" class="fignos">
 <figure>
 <img src="images/jaccard.png" alt="" /><figcaption><span>Figure 2:</span> Discretized Jaccard index using different edge cutoffs and different probability cutoff</figcaption>
 </figure>
 </div>
+Metal3D is available as self-contained notebook on GoogleColab:
 <script src="https://gist.github.com/lzhou1110/2a30a81cb8c175514ed627bc18016774.js"></script>
 <h4 id="selectivity-for-other-metals">Selectivity for other metals</h4>
 <div id="fig:selectivity-metal3d" class="fignos">
@@ -192,9 +218,9 @@ Not sure if this  two paragraphs are too long for the results section, I tried t
 </figure>
 </div>
 <p>Trained exclusively on zinc, Metal3D works well to predict the location of transition metals from 25 randomly drawn structures for each metal.
-[<a href="#fig:selectivity-metal3d">10</a>] shows that recall is high for all transition metals meaning the Metal3D model correctly finds most sites in the test sets. For the alkali and earth alkali metals recall is much lower as the model only finds some sites.
+[<a href="#fig:selectivity-metal3d">3</a>] shows that recall is high for all transition metals meaning the Metal3D model correctly finds most sites in the test sets. For the alkali and earth alkali metals recall is much lower as the model only finds some sites.
 The mean probability for found zinc structures (ZN p= ±) in the test set is higher than for the other transition metals [<a href="#fig:selectivity-probability-metal3d">13</a>] and significantly higher than for the alkali metals (NA p=XX±, K p=XX±). The probability for MG (p=XX ±) is lower than for CA (p=XX±). The RMSD for each found metal site is again lowest for zinc. The mean RMSD for sodium and potassium are as low as for the other transition metals. The only metal with significantly higher RMSD (2.X ±) is copper(I).</p>
-<p>For Metal1D overall recall is lower with similiar differences in the detection of main group metals versus transition metals [??]</p>
+<p>For Metal1D overall recall is lower with similiar differences in the detection of main group metals versus transition metals [<a href="#fig:selectivity-metal1d">10</a>]</p>
 <h4 id="alpha-fold">Alpha Fold</h4>
 <p>AlphaFold often predicts sidechains in metal ion binding sites in the holo conformation. Services like AlphaFill use homology to transplant metals from similar PDB structures to the AlphaFold structure. Metal3D does not use homology can even deal with metal sites that are only partially in the holo conformation.</p>
 <div id="fig:alphafold" class="fignos">
@@ -213,6 +239,7 @@ The mean probability for found zinc structures (ZN p= ±) in the test set is hig
 <h4 id="hca2-case-study">HCA2: case study</h4>
 <p>HCA2 is the first enzyme where a catalytic zinc was discovered and is therefore one of the best studied metalloenzymes to date with a rich throve of mutational data available.
 On the wildtype enzyme crystal structure (2CBA) Metal3D perfectly recapitulates the location of the active site metal when using a high probability cutoff (p&gt;0.4). The sites predicted with lower probability all look like reasonable transient binding sites at the surface of the protein.</p>
+<p><iframe src="interactive/index.html" title="2CBA probabilities" width="100%" height="900px" frameborder="0"></iframe></p>
 <div id="fig:2cba-probabilites" class="fignos">
 <figure>
 <img src="images/2CBA_probabilities.png" alt="" /><figcaption><span>Figure 6:</span> Probability evolution in HCA2 for different probability cutoffs A) p=0.1 B) p=0.2 C) p=0.3 D) p=0.4 E) p= 0.75</figcaption>
@@ -242,7 +269,10 @@ While MIB also offers high precision, BioMetAll (using the cluster center) is no
 </figure>
 </div>
 <h2 id="discussion">Discussion</h2>
-<p>3D CNN model accuracy. Recent work EquiDock uses no sidechains at all, gets ligand RMSD where only 25% are under a 2 threshold, https://arxiv.org/pdf/2202.05146.pdf Mean RMSD 8.3 A, Centroid 42.4</p>
+<p>Choice of resolution cutoff
+Zinc The average bond length corresponds to a resolution of ∼2.2 Å. Also, the deviation increases noticeably after the resolution exceeds 2.5 Å.<span class="citation" data-cites="Wt0ducot"><sup><a href="#ref-Wt0ducot" role="doc-biblioref">22</a></sup></span></p>
+<p>Why were nucleic structures excluded? Why include all zinc sites and not just the good ones?</p>
+<p>model choice? Why are CNNs better than equivariant approaches for this kind of work?. Recent work EquiDock uses no sidechains at all, gets ligand RMSD where only 25% are under a 2 threshold, https://arxiv.org/pdf/2202.05146.pdf Mean RMSD 8.3 A, Centroid 42.4</p>
 <p>MIB discards all sites with less than 2 coordination partners so it will not be able to identify labile binding sites.</p>
 <p>Discuss 4L99 which is one of the FN for the model. Here are Lysine next to the zinc and therefore probability is low.Could be wrongly modeled (carboxlyated lysine instead of normal lysine)<span class="citation" data-cites="doi:10.1016/S0022-2836"><sup><span class="citeproc-not-found" data-reference-id="doi:10.1016/S0022-2836"><strong>???</strong></span></sup></span> but some leucyl aminopeptidases also have this coordination. (check 10.1515/BC.2006.191 to find mechanism)</p>
 <p>discuss why water molecules were not considered. considered only implicitly. Might be integrated in future but needs quality check for existing waters in training/test set
@@ -250,14 +280,15 @@ Methods [References Dowser] that place deep waters but they do not know about me
 <p>Lack in selectivity could be related to smoothing the gaussian quite a bit when training (anything &gt;0.05) is a hit.
 Resolution of grid might be an issue
 Might be improved by improving the grid resolution to 0.5</p>
-<p>Discuss selectivity. E.g based on.<span class="citation" data-cites="7I7IPj0T"><sup><a href="#ref-7I7IPj0T" role="doc-biblioref">10</a></sup></span> Zinc prefers tetrahedral coordination, whereas e.g copper(II) (and maybe CU(I)- check it) prefers square planar which might explain a bit lower selctivity. In the work by Tezcan the protein assemblies form different complexes with the different metals.</p>
+<p>Discuss selectivity. E.g based on.<span class="citation" data-cites="7I7IPj0T"><sup><a href="#ref-7I7IPj0T" role="doc-biblioref">23</a></sup></span> Zinc prefers tetrahedral coordination, whereas e.g copper(II) (and maybe CU(I)- check it) prefers square planar which might explain a bit lower selctivity. In the work by Tezcan the protein assemblies form different complexes with the different metals.</p>
 <p>General implications for the faint metal ion binding sites detected using the model: This is evident from the fact that unstructured polypeptides and folded proteins alike often form aggregates in the presence of high concentrations of transition metals.
 Once the entropic cost of association is overcome, the resulting noncovalent interfaces can be optimized through additional mutations
-These nonspecific interactions could explain why free zinc concentration is tightly controlled in cellular environments; the total concentration of zinc in cells is about 200 μM, but the concentration of free zinc is only picomolar<span class="citation" data-cites="VzsHhBSh"><sup><a href="#ref-VzsHhBSh" role="doc-biblioref">11</a></sup></span>.</p>
+These nonspecific interactions could explain why free zinc concentration is tightly controlled in cellular environments; the total concentration of zinc in cells is about 200 μM, but the concentration of free zinc is only picomolar<span class="citation" data-cites="VzsHhBSh"><sup><a href="#ref-VzsHhBSh" role="doc-biblioref">24</a></sup></span>.</p>
 <p>From a practical inorganic chemical viewpoint individual proteins can be utilized as large polydentate ligands that bring along the advantage of having extensive functionalizable surfaces. From a functional perspective metals possess properties such as Lewis acidity and redox reactivity that enable them to carry out catalytic transformations not accessible by organic building blocks.</p>
-<p>Our tool allows to move away from using rational approaches such as the i, i + 4 diHis motifs used for the assembly and stabilization of metalloproteins and peptides through coordination of divalent transition metal ions to a more knowledgebased approach.<span class="citation" data-cites="RJ44nj3R 15drt0nXZ 85PeY3aG"><sup><a href="#ref-RJ44nj3R" role="doc-biblioref">2</a>,<a href="#ref-15drt0nXZ" role="doc-biblioref">12</a>,<a href="#ref-85PeY3aG" role="doc-biblioref">13</a></sup></span></p>
-<p>Moreover, one-third of the zinc ions present in crystal structures are artifacts, merely aiding crystal formation and packing with no biological significance<span class="citation" data-cites="Wt0ducot"><sup><a href="#ref-Wt0ducot" role="doc-biblioref">6</a></sup></span></p>
+<p>Our tool allows to move away from using rational approaches such as the i, i + 4 diHis motifs used for the assembly and stabilization of metalloproteins and peptides through coordination of divalent transition metal ions to a more knowledgebased approach.<span class="citation" data-cites="RJ44nj3R 15drt0nXZ 85PeY3aG"><sup><a href="#ref-RJ44nj3R" role="doc-biblioref">25</a>–<a href="#ref-85PeY3aG" role="doc-biblioref">27</a></sup></span></p>
+<p>Moreover, one-third of the zinc ions present in crystal structures are artifacts, merely aiding crystal formation and packing with no biological significance<span class="citation" data-cites="Wt0ducot"><sup><a href="#ref-Wt0ducot" role="doc-biblioref">22</a></sup></span></p>
 <p>The small size of the Zn(II) cation (∼74 pm for four-coordinate and ∼88 pm for six-coordinate ion) prevents higher coordination numbers due to molecular repulsion and higher energy orbitals</p>
+<p>Discussion with DeepSite which uses a sliding box approach and does not give individual residue scores. Therefore less useful for protein design.</p>
 <p><!-- KD values discussion (new ITC data vs. old data by Kiefer, Fierke etc): 
  
  Old method: Enzyme-
@@ -275,7 +306,7 @@ constants (Dawson et al., 1986). The dissociation constant
 was calculated using KaleidaGraph program with eq:
 [E-ZN]/[E]tot = C/(1+Kd/[Zn]free)
 
-[@doi:10.1021/ic301645j]
+Newer method: [@doi:10.1021/ic301645j]
  --></p>
 <h2 id="conclusion">Conclusion</h2>
 <h2 id="supplement">Supplement</h2>
@@ -283,7 +314,7 @@ was calculated using KaleidaGraph program with eq:
 <p>Maybe ROC curve for Metal1D and Metal3D here</p>
 <h3 id="metal-selectivity">Metal selectivity</h3>
 <h4 id="metal1d-1">Metal1D</h4>
-<div id="fig:selectivity-metal3d" class="fignos">
+<div id="fig:selectivity-metal1d" class="fignos">
 <figure>
 <img src="images/metal1D_metal_selectivity.jpg" alt="" /><figcaption><span>Figure 10:</span> Recall for zinc testset and a 25 randomly drawn structures for other transition, alkali and earth-alkali metals for Metal1D</figcaption>
 </figure>
@@ -321,41 +352,83 @@ was calculated using KaleidaGraph program with eq:
 <div id="ref-4sXp2sDw">
 <p>(1) Koohi-Moghadam, M.; Wang, H.; Wang, Y.; Yang, X.; Li, H.; Wang, J.; Sun, H. Predicting Disease-Associated Mutation of Metal-Binding Sites in Proteins Using a Deep Learning Approach. <em>Nat Mach Intell</em> <strong>2019</strong>, <em>1</em> (12), 561–567. <a href="https://doi.org/10.1038/s42256-019-0119-z">https://doi.org/10.1038/s42256-019-0119-z</a>.</p>
 </div>
-<div id="ref-RJ44nj3R">
-<p>(2) Handel, T. M.; Williams, S. A.; DeGrado, W. F. Metal Ion-Dependent Modulation of the Dynamics of a Designed Protein. <em>Science</em> <strong>1993</strong>, <em>261</em> (5123), 879–885. <a href="https://doi.org/10.1126/science.8346440">https://doi.org/10.1126/science.8346440</a>.</p>
+<div id="ref-oOm5j05D">
+<p>(2) Studer, S.; Hansen, D. A.; Pianowski, Z. L.; Mittl, P. R. E.; Debon, A.; Guffy, S. L.; Der, B. S.; Kuhlman, B.; Hilvert, D. Evolution of a Highly Active and Enantiospecific Metalloenzyme from Short Peptides. <em>Science</em> <strong>2018</strong>, <em>362</em> (6420), 1285–1288. <a href="https://doi.org/10.1126/science.aau3744">https://doi.org/10.1126/science.aau3744</a>.</p>
 </div>
-<div id="ref-BeHu3IEC">
-<p>(3) DeGrado, W. F.; Summa, C. M.; Pavone, V.; Nastri, F.; Lombardi, A. De Novo Design and Structural Characterization of Proteins and Metalloproteins. <em>Annu. Rev. Biochem.</em> <strong>1999</strong>, <em>68</em> (1), 779–819. <a href="https://doi.org/10.1146/annurev.biochem.68.1.779">https://doi.org/10.1146/annurev.biochem.68.1.779</a>.</p>
+<div id="ref-khOeAdye">
+<p>(3) Der, B. S.; Edwards, D. R.; Kuhlman, B. Catalysis by a de Novo Zinc-Mediated Protein Interface: Implications for Natural Enzyme Evolution and Rational Enzyme Engineering. <em>Biochemistry</em> <strong>2012</strong>, <em>51</em> (18), 3933–3940. <a href="https://doi.org/10.1021/bi201881p">https://doi.org/10.1021/bi201881p</a>.</p>
+</div>
+<div id="ref-78bpCEHk">
+<p>(4) Fujieda, N.; Schätti, J.; Stuttfeld, E.; Ohkubo, K.; Maier, T.; Fukuzumi, S.; Ward, T. R. Enzyme Repurposing of a Hydrolase as an Emergent Peroxidase Upon Metal Binding. <em>Chem. Sci.</em> <strong>2015</strong>, <em>6</em> (7), 4060–4065. <a href="https://doi.org/10.1039/c5sc01065a">https://doi.org/10.1039/c5sc01065a</a>.</p>
 </div>
 <div id="ref-io987fKE">
-<p>(4) Kakkis, A.; Gagnon, D.; Esselborn, J.; Britt, R. D.; Tezcan, F. A. Metal‐Templated Design of Chemically Switchable Protein Assemblies with High‐Affinity Coordination Sites. <em>Angew. Chem. Int. Ed.</em> <strong>2020</strong>, <em>59</em> (49), 21940–21944. <a href="https://doi.org/10.1002/anie.202009226">https://doi.org/10.1002/anie.202009226</a>.</p>
+<p>(5) Kakkis, A.; Gagnon, D.; Esselborn, J.; Britt, R. D.; Tezcan, F. A. Metal‐Templated Design of Chemically Switchable Protein Assemblies with High‐Affinity Coordination Sites. <em>Angew. Chem. Int. Ed.</em> <strong>2020</strong>, <em>59</em> (49), 21940–21944. <a href="https://doi.org/10.1002/anie.202009226">https://doi.org/10.1002/anie.202009226</a>.</p>
 </div>
-<div id="ref-1HMhB3vxM">
-<p>(5) Lin, Y.-F.; Cheng, C.-W.; Shih, C.-S.; Hwang, J.-K.; Yu, C.-S.; Lu, C.-H. MIB: Metal Ion-Binding Site Prediction and Docking Server. <em>J. Chem. Inf. Model.</em> <strong>2016</strong>, <em>56</em> (12), 2287–2291. <a href="https://doi.org/10.1021/acs.jcim.6b00407">https://doi.org/10.1021/acs.jcim.6b00407</a>.</p>
+<div id="ref-LY9UGI7">
+<p>(6) Guffy, S. L.; Der, B. S.; Kuhlman, B. Probing the Minimal Determinants of Zinc Binding with Computational Protein Design. <em>Protein Engineering, Design and Selection</em> <strong>2016</strong>, <em>29</em> (8), 327–338. <a href="https://doi.org/10.1093/protein/gzw026">https://doi.org/10.1093/protein/gzw026</a>.</p>
 </div>
-<div id="ref-Wt0ducot">
-<p>(6) Laitaoja, M.; Valjakka, J.; Jänis, J. Zinc Coordination Spheres in Protein Structures. <em>Inorg. Chem.</em> <strong>2013</strong>, <em>52</em> (19), 10983–10991. <a href="https://doi.org/10.1021/ic401072d">https://doi.org/10.1021/ic401072d</a>.</p>
+<div id="ref-5Vxh8hay">
+<p>(7) Brunk, E.; Rothlisberger, U. Mixed Quantum Mechanical/Molecular Mechanical Molecular Dynamics Simulations of Biological Systems in Ground and Electronically Excited States. <em>Chem. Rev.</em> <strong>2015</strong>, <em>115</em> (12), 6217–6263. <a href="https://doi.org/10.1021/cr500628b">https://doi.org/10.1021/cr500628b</a>.</p>
 </div>
-<div id="ref-q2gxO5bP">
-<p>(7) Doerr, S.; Harvey, M. J.; Noé, F.; De Fabritiis, G. HTMD: High-Throughput Molecular Dynamics for Molecular Discovery. <em>J. Chem. Theory Comput.</em> <strong>2016</strong>, <em>12</em> (4), 1845–1852. <a href="https://doi.org/10.1021/acs.jctc.6b00049">https://doi.org/10.1021/acs.jctc.6b00049</a>.</p>
+<div id="ref-yZfcMIwh">
+<p>(8) Jumper, J.; Evans, R.; Pritzel, A.; Green, T.; Figurnov, M.; Ronneberger, O.; Tunyasuvunakool, K.; Bates, R.; Žídek, A.; Potapenko, A.; Bridgland, A.; Meyer, C.; Kohl, S. A. A.; Ballard, A. J.; Cowie, A.; Romera-Paredes, B.; Nikolov, S.; Jain, R.; Adler, J.; Back, T.; Petersen, S.; Reiman, D.; Clancy, E.; Zielinski, M.; Steinegger, M.; Pacholska, M.; Berghammer, T.; Bodenstein, S.; Silver, D.; Vinyals, O.; Senior, A. W.; Kavukcuoglu, K.; Kohli, P.; Hassabis, D. Highly Accurate Protein Structure Prediction with AlphaFold. <em>Nature</em> <strong>2021</strong>, <em>596</em> (7873), 583–589. <a href="https://doi.org/10.1038/s41586-021-03819-2">https://doi.org/10.1038/s41586-021-03819-2</a>.</p>
+</div>
+<div id="ref-rnu2o8C9">
+<p>(9) Baek, M.; DiMaio, F.; Anishchenko, I.; Dauparas, J.; Ovchinnikov, S.; Lee, G. R.; Wang, J.; Cong, Q.; Kinch, L. N.; Schaeffer, R. D.; Millán, C.; Park, H.; Adams, C.; Glassman, C. R.; DeGiovanni, A.; Pereira, J. H.; Rodrigues, A. V.; van Dijk, A. A.; Ebrecht, A. C.; Opperman, D. J.; Sagmeister, T.; Buhlheller, C.; Pavkov-Keller, T.; Rathinaswamy, M. K.; Dalwadi, U.; Yip, C. K.; Burke, J. E.; Garcia, K. C.; Grishin, N. V.; Adams, P. D.; Read, R. J.; Baker, D. Accurate Prediction of Protein Structures and Interactions Using a Three-Track Neural Network. <em>Science</em> <strong>2021</strong>, <em>373</em> (6557), 871–876. <a href="https://doi.org/10.1126/science.abj8754">https://doi.org/10.1126/science.abj8754</a>.</p>
+</div>
+<div id="ref-ls5kyxZ3">
+<p>(10) Torng, W.; Altman, R. B. 3D Deep Convolutional Neural Networks for Amino Acid Environment Similarity Analysis. <em>BMC Bioinformatics</em> <strong>2017</strong>, <em>18</em> (1). <a href="https://doi.org/10.1186/s12859-017-1702-0">https://doi.org/10.1186/s12859-017-1702-0</a>.</p>
+</div>
+<div id="ref-F7P74Etp">
+<p>(11) Shroff, R.; Cole, A. W.; Diaz, D. J.; Morrow, B. R.; Donnell, I.; Annapareddy, A.; Gollihar, J.; Ellington, A. D.; Thyer, R. Discovery of Novel Gain-of-Function Mutations Guided by Structure-Based Deep Learning. <em>ACS Synth. Biol.</em> <strong>2020</strong>, <em>9</em> (11), 2927–2935. <a href="https://doi.org/10.1021/acssynbio.0c00345">https://doi.org/10.1021/acssynbio.0c00345</a>.</p>
+</div>
+<div id="ref-6szq3cwi">
+<p>(12) Anand, N.; Eguchi, R.; Mathews, I. I.; Perez, C. P.; Derry, A.; Altman, R. B.; Huang, P.-S. Protein Sequence Design with a Learned Potential. <em>Nat Commun</em> <strong>2022</strong>, <em>13</em> (1). <a href="https://doi.org/10.1038/s41467-022-28313-9">https://doi.org/10.1038/s41467-022-28313-9</a>.</p>
+</div>
+<div id="ref-q224Kv8w">
+<p>(13) Renaud, N.; Geng, C.; Georgievska, S.; Ambrosetti, F.; Ridder, L.; Marzella, D. F.; Réau, M. F.; Bonvin, A. M. J. J.; Xue, L. C. DeepRank: A Deep Learning Framework for Data Mining 3D Protein-Protein Interfaces. <em>Nat Commun</em> <strong>2021</strong>, <em>12</em> (1). <a href="https://doi.org/10.1038/s41467-021-27396-0">https://doi.org/10.1038/s41467-021-27396-0</a>.</p>
+</div>
+<div id="ref-yBhqGkBa">
+<p>(14) Gainza, P.; Sverrisson, F.; Monti, F.; Rodolà, E.; Boscaini, D.; Bronstein, M. M.; Correia, B. E. Deciphering Interaction Fingerprints from Protein Molecular Surfaces Using Geometric Deep Learning. <em>Nat Methods</em> <strong>2019</strong>, <em>17</em> (2), 184–192. <a href="https://doi.org/10.1038/s41592-019-0666-6">https://doi.org/10.1038/s41592-019-0666-6</a>.</p>
+</div>
+<div id="ref-Gq7n6vhH">
+<p>(15) Jiménez, J.; Doerr, S.; Martínez-Rosell, G.; Rose, A. S.; De Fabritiis, G. DeepSite: Protein-Binding Site Predictor Using 3D-Convolutional Neural Networks. <em>Bioinformatics</em> <strong>2017</strong>, <em>33</em> (19), 3036–3042. <a href="https://doi.org/10.1093/bioinformatics/btx350">https://doi.org/10.1093/bioinformatics/btx350</a>.</p>
 </div>
 <div id="ref-mVGaXlum">
-<p>(8) Skalic, M.; Varela-Rial, A.; Jiménez, J.; Martínez-Rosell, G.; De Fabritiis, G. LigVoxel: Inpainting Binding Pockets Using 3D-Convolutional Neural Networks. <em>Bioinformatics</em> <strong>2018</strong>, <em>35</em> (2), 243–250. <a href="https://doi.org/10.1093/bioinformatics/bty583">https://doi.org/10.1093/bioinformatics/bty583</a>.</p>
+<p>(16) Skalic, M.; Varela-Rial, A.; Jiménez, J.; Martínez-Rosell, G.; De Fabritiis, G. LigVoxel: Inpainting Binding Pockets Using 3D-Convolutional Neural Networks. <em>Bioinformatics</em> <strong>2018</strong>, <em>35</em> (2), 243–250. <a href="https://doi.org/10.1093/bioinformatics/bty583">https://doi.org/10.1093/bioinformatics/bty583</a>.</p>
+</div>
+<div id="ref-13hjzBbje">
+<p>(17) Stärk, H.; Ganea, O.-E.; Pattanaik, L.; Barzilay, R.; Jaakkola, T. EquiBind: Geometric Deep Learning for Drug Binding Structure Prediction. arXiv 2022. <a href="https://doi.org/10.48550/arxiv.2202.05146">https://doi.org/10.48550/arxiv.2202.05146</a>.</p>
+</div>
+<div id="ref-9K88m3YT">
+<p>(18) Li, B.; Yang, Y. T.; Capra, J. A.; Gerstein, M. B. Predicting Changes in Protein Thermodynamic Stability Upon Point Mutation with Deep 3D Convolutional Neural Networks. <em>PLoS Comput Biol</em> <strong>2020</strong>, <em>16</em> (11), e1008291. <a href="https://doi.org/10.1371/journal.pcbi.1008291">https://doi.org/10.1371/journal.pcbi.1008291</a>.</p>
+</div>
+<div id="ref-q2gxO5bP">
+<p>(19) Doerr, S.; Harvey, M. J.; Noé, F.; De Fabritiis, G. HTMD: High-Throughput Molecular Dynamics for Molecular Discovery. <em>J. Chem. Theory Comput.</em> <strong>2016</strong>, <em>12</em> (4), 1845–1852. <a href="https://doi.org/10.1021/acs.jctc.6b00049">https://doi.org/10.1021/acs.jctc.6b00049</a>.</p>
 </div>
 <div id="ref-hchMCnC1">
-<p>(9) de Boer, P.-T.; Kroese, D. P.; Mannor, S.; Rubinstein, R. Y. A Tutorial on the Cross-Entropy Method. <em>Ann Oper Res</em> <strong>2005</strong>, <em>134</em> (1), 19–67. <a href="https://doi.org/10.1007/s10479-005-5724-z">https://doi.org/10.1007/s10479-005-5724-z</a>.</p>
+<p>(20) de Boer, P.-T.; Kroese, D. P.; Mannor, S.; Rubinstein, R. Y. A Tutorial on the Cross-Entropy Method. <em>Ann Oper Res</em> <strong>2005</strong>, <em>134</em> (1), 19–67. <a href="https://doi.org/10.1007/s10479-005-5724-z">https://doi.org/10.1007/s10479-005-5724-z</a>.</p>
+</div>
+<div id="ref-pchdLF0k">
+<p>(21) Pang, Y. P.; Xu, K.; Yazal, J. E.; Prendergas, F. G. Successful Molecular Dynamics Simulation of the Zinc-Bound Farnesyltransferase Using the Cationic Dummy Atom Approach. <em>Protein Sci</em> <strong>2000</strong>, <em>9</em> (10), 1857–1865.</p>
+</div>
+<div id="ref-Wt0ducot">
+<p>(22) Laitaoja, M.; Valjakka, J.; Jänis, J. Zinc Coordination Spheres in Protein Structures. <em>Inorg. Chem.</em> <strong>2013</strong>, <em>52</em> (19), 10983–10991. <a href="https://doi.org/10.1021/ic401072d">https://doi.org/10.1021/ic401072d</a>.</p>
 </div>
 <div id="ref-7I7IPj0T">
-<p>(10) Salgado, E. N.; Ambroggio, X. I.; Brodin, J. D.; Lewis, R. A.; Kuhlman, B.; Tezcan, F. A. Metal Templated Design of Protein Interfaces. <em>Proc Natl Acad Sci USA</em> <strong>2009</strong>, <em>107</em> (5), 1827–1832. <a href="https://doi.org/10.1073/pnas.0906852107">https://doi.org/10.1073/pnas.0906852107</a>.</p>
+<p>(23) Salgado, E. N.; Ambroggio, X. I.; Brodin, J. D.; Lewis, R. A.; Kuhlman, B.; Tezcan, F. A. Metal Templated Design of Protein Interfaces. <em>Proc Natl Acad Sci USA</em> <strong>2009</strong>, <em>107</em> (5), 1827–1832. <a href="https://doi.org/10.1073/pnas.0906852107">https://doi.org/10.1073/pnas.0906852107</a>.</p>
 </div>
 <div id="ref-VzsHhBSh">
-<p>(11) Maret, W.; Li, Y. Coordination Dynamics of Zinc in Proteins. <em>Chem. Rev.</em> <strong>2009</strong>, <em>109</em> (10), 4682–4707. <a href="https://doi.org/10.1021/cr800556u">https://doi.org/10.1021/cr800556u</a>.</p>
+<p>(24) Maret, W.; Li, Y. Coordination Dynamics of Zinc in Proteins. <em>Chem. Rev.</em> <strong>2009</strong>, <em>109</em> (10), 4682–4707. <a href="https://doi.org/10.1021/cr800556u">https://doi.org/10.1021/cr800556u</a>.</p>
+</div>
+<div id="ref-RJ44nj3R">
+<p>(25) Handel, T. M.; Williams, S. A.; DeGrado, W. F. Metal Ion-Dependent Modulation of the Dynamics of a Designed Protein. <em>Science</em> <strong>1993</strong>, <em>261</em> (5123), 879–885. <a href="https://doi.org/10.1126/science.8346440">https://doi.org/10.1126/science.8346440</a>.</p>
 </div>
 <div id="ref-15drt0nXZ">
-<p>(12) Arnold, F. H.; Haymore, B. L. Engineered Metal-Binding Proteins: Purification to Protein Folding. <em>Science</em> <strong>1991</strong>, <em>252</em> (5014), 1796–1797. <a href="https://doi.org/10.1126/science.1648261">https://doi.org/10.1126/science.1648261</a>.</p>
+<p>(26) Arnold, F. H.; Haymore, B. L. Engineered Metal-Binding Proteins: Purification to Protein Folding. <em>Science</em> <strong>1991</strong>, <em>252</em> (5014), 1796–1797. <a href="https://doi.org/10.1126/science.1648261">https://doi.org/10.1126/science.1648261</a>.</p>
 </div>
 <div id="ref-85PeY3aG">
-<p>(13) Krantz, B. A.; Sosnick, T. R. <em>Nat. Struct Biol.</em> <strong>2001</strong>, <em>8</em> (12), 1042–1047. <a href="https://doi.org/10.1038/nsb723">https://doi.org/10.1038/nsb723</a>.</p>
+<p>(27) Krantz, B. A.; Sosnick, T. R. <em>Nat. Struct Biol.</em> <strong>2001</strong>, <em>8</em> (12), 1042–1047. <a href="https://doi.org/10.1038/nsb723">https://doi.org/10.1038/nsb723</a>.</p>
 </div>
 </div>
 <!-- default theme -->
