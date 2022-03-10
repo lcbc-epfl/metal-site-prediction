@@ -22,7 +22,7 @@
      
 
 	<!-- <link type="text/css" rel="stylesheet" href="https://3dmol.csb.pitt.edu/css/index.css"> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/1.8.0/3Dmol-nojquery-min.js" integrity="sha512-9iiTgstim185ZZPL/nZ+t+MLMmIbZEMfoZ1swSBUhxt4AukOPY34yyO2217X1dN5ziVMKi+YLmp/JBj+KyEaUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/1.7.1/3Dmol-nojquery-min.js"></script>
         <script>
             var viewer = null; 
 
@@ -36,6 +36,7 @@
             };
 
          var draw = function(isoval, props) {
+            var viewer = null; 
             let element = $('#viewer');
             let config = { backgroundColor: 'white' };
             viewer = $3Dmol.createViewer( element, config );
@@ -45,9 +46,9 @@
                 let v = viewer;
                 v.addModel( data, "pdb" );                       /* load data */
                 v.setStyle({}, {cartoon: {color: 'gray'}});  /* style all atoms */
-                if (props['surface']){
-                    surf1 = v.addSurface($3Dmol.SurfaceType.VDW, {color:'white', opacity:0.95}, {hetflag:false}, {hetflag:false}) 
-                }
+                // if (props['surface']){
+                //     surf1 = v.addSurface($3Dmol.SurfaceType.VDW, {color:'white', opacity:0.95}, {hetflag:false}, {hetflag:false}) 
+                // }
                 v.zoomTo();                                      /* set camera */
                 v.render();                                      /* render scene */
                 v.zoom(1);                               /* slight zoom */
@@ -79,7 +80,9 @@
                     v.setStyle({resn: 'GLU'}, {stick: {colorscheme: "grayCarbon"}, cartoon:{}});
                 }
                 if (props['pdbmetal']){
-                    v.setStyle({resn: 'ZN'}, {sphere: {colorscheme: "grayCarbon"}, cartoon:{}});
+                    console.log('set pdbmetal')
+                    console.log( v.getModel(0))
+                    v.getModel(0).setStyle({resn: 'ZN'}, {sphere: {colorscheme: "grayCarbon"}, cartoon:{}});
                 }
                 },
                 error: function(hdr, status, err) {
@@ -89,6 +92,7 @@
             });
             $.get('metal3d_probes_2cba.pdb', function(data){
                     viewer.addModel( data, "pdb" );   
+                                        
                     let columns = data.split("\n");
                     let colors = []
                     for (var i = 0; i < columns.length-1; i++){
@@ -109,7 +113,7 @@
                     }
                     }
                 );}
-                    viewer.render();
+                viewer.render();
                 }, 'text');
             $.get('biometall_probes_2cba.pdb', function(data){
                     viewer.addModel( data, "pdb" );   
@@ -117,7 +121,6 @@
                     if (props['biometall']){
                     viewer.getModel(2).setStyle({'atom':'XE'},{'sphere': {'scale':0.2}});
                     viewer.getModel(2).setStyle({'atom':'S'},{'sphere': {'scale':0.5}});
-                    
                     viewer.getModel(2).setHoverable({}, true,
                     function(atom,viewer,event,container) {
                         if(!atom.label) {
@@ -137,7 +140,7 @@
                     }
                     }
                 );}
-                    viewer.render();
+                viewer.render();
                 }, 'text');
             
                 $.get('metal1d_probes_2cba.pdb', function(data){
@@ -158,7 +161,7 @@
                     }
                     }
                 );}
-                    viewer.render();
+                viewer.render();
                 }, 'text');
 
                 $.get('mib_probes_2cba.pdb', function(data){
@@ -183,11 +186,12 @@
                     }
                     }
                 );}
-                    viewer.render();
+                viewer.render();
                 }, 'text');
            
             // viewer.removeAllSurfaces()
             initShapes(viewer, isoval)
+            viewer.render()
             };
 
             
@@ -205,7 +209,7 @@
                 "metal1d":false,
                 "mib":false,
                 "biometall":false,
-                "surface":false
+                // "surface":false
             }
             var isoval = 0.5
             $( document ).ready(function() {
@@ -256,15 +260,15 @@
                     }
                     draw(isoval,props)
                 });
-                $('#surface').change(function() {
-                    // this will contain a reference to the checkbox   
-                    if (this.checked) {
-                       props['surface'] = true
-                    } else {
-                        props['surface'] = false
-                    }
-                    draw(isoval,props)
-                });
+                // $('#surface').change(function() {
+                //     // this will contain a reference to the checkbox   
+                //     if (this.checked) {
+                //        props['surface'] = true
+                //     } else {
+                //         props['surface'] = false
+                //     }
+                //     draw(isoval,props)
+                // });
                 $('#metal3d').change(function() {
                     // this will contain a reference to the checkbox   
                     if (this.checked) {
@@ -326,29 +330,29 @@
     <div class="py-1 mx-3 mt-2">
         <b>Display options</b>
     </div>
-    <div class="flex justify-start">
-        <div class="p-3">
+    <div class="flex justify-start p-2">
+        <div class="p-1">
             <label for="his" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
                 <input id="his" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">His</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3">
+        <div class="p-1">
             <label for="asp" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
                 <input id="asp" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Asp</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3">
+        <div class="p-1">
             <label for="glu" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
                 <input id="glu" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Glu</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3">
+        <div class="p-1">
             <label for="cys" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
                 <input id="cys" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Cys</span>
@@ -356,20 +360,20 @@
             </label>
         </div>
 
-        <div class="p-3 ">
+        <div class="p-1 ">
             <label for="pdbmetal" class="relative flex-inline items-center isolate p-4 rounded-2xl">
                 <input id="pdbmetal" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Zn<sup>2+</sup></span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3 ">
+        <!-- <div class="p-1 ">
             <label for="surface" class="relative flex-inline items-center isolate p-4 rounded-2xl">
                 <input id="surface" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Surface</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
-        </div>
+        </div> -->
 
         <!-- <div class="p-3 relative z-0">
             <input type="text" name="resids" id="floating_company" class="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
@@ -379,30 +383,30 @@
     <div class="py-1 mx-3 mt-2">
         <b>Putative metal ion binding sites</b>
     </div>
-    <div class="flex pb-3">
+    <div class="flex pb-3 px-2">
         
-        <div class="p-3">
+        <div class="p-1">
             <label for="metal3d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
                 <input id="metal3d" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Metal3D</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3">
+        <div class="p-1">
             <label for="metal1d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
                 <input id="metal1d" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">Metal1D</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3">
+        <div class="p-1">
             <label for="mib" class="relative flex-inline items-center isolate p-4 rounded-2xl">
                 <input id="mib" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">MIB</span>
                 <div class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl"></div>
             </label>
         </div>
-        <div class="p-3">
+        <div class="p-1">
             <label for="biometall" class="relative flex-inline items-center isolate p-4 rounded-2xl">
                 <input id="biometall" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
                 <span class="ml-2 relative z-20">BioMetAll</span>
