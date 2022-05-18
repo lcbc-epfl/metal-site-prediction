@@ -194,9 +194,22 @@
                 viewer.render();
             }, 'text');
 
+            //AlphaFold colors from https://gist.github.com/piroyon/30d1c1099ad488a7952c3b21a5bebc96
+            let colorAlpha = function (atom) {
+                if (atom.b < 50) {
+                    return 'OrangeRed';
+                } else if (atom.b < 70) {
+                    return 'Gold';
+                } else if (atom.b < 90) {
+                    return 'MediumTurquoise';
+                } else {
+                    return 'Blue';
+                }
+            };
+
             $.get(props['pdb'] + '_AF_v2.pdb', function (data) {
                 viewer.addModel(data, "pdb");
-                viewer.getModel(5).setStyle({}, { cartoon: { color: 'cyan' } });  /* style all atoms */
+                viewer.getModel(5).setStyle({}, { cartoon: { colorfunc: colorAlpha } });  /* style all atoms */
                 viewer.render();
             }, 'text');
             //initShapes(viewer, isoval)
@@ -382,144 +395,174 @@
 
 </head>
 
-<body class="h-full w-full">
-    <div id="content" class="p-4">
-        <div class="flex items-center mx-3 py-1">
-            <div class="flex flex-1  items-center justify-end pr-4 space-x-2">
-                <span class="whitespace-nowrap">
-                    <select class="rounded" id="pdb">
-                        <option value="2cba">Carbonic anhydrase (2CBA)</option>
-                        <option value="3rzv">AMSH (3RZV)</option>
-                    </select> </span>
+<body>
+    <div class="h-full w-full relative">
+        <div id="content" class="p-4">
+            <div class="flex items-center mx-3 py-1">
+                <div class="flex flex-1  items-center justify-end pr-4 space-x-2">
+                    <span class="whitespace-nowrap">
+                        <select class="rounded" id="pdb">
+                            <option value="2cba">Carbonic anhydrase (2CBA)</option>
+                            <option value="3rzv">AMSH (3RZV)</option>
+                        </select> </span>
 
+                </div>
+                <div class="flex flex-1  items-center justify-end pr-4 space-x-2">
+                    <span class="whitespace-nowrap">Metal3D <i>p(Metal)</i> </span>
+                    <span id="isovalue" class="bg-gray-200 p-1 rounded">0.5</span>
+                </div>
+                <input class="w-full" type="range" id="rangeslider" min="0" max="1" step="0.025" value=0.5>
             </div>
-            <div class="flex flex-1  items-center justify-end pr-4 space-x-2">
-                <span class="whitespace-nowrap">Metal3D <i>p(Metal)</i> </span>
-                <span id="isovalue" class="bg-gray-200 p-1 rounded">0.5</span>
+            <div class="py-1 mx-3 mt-2">
+                <b>Display options</b>
             </div>
-            <input class="w-full" type="range" id="rangeslider" min="0" max="1" step="0.025" value=0.5>
-        </div>
-        <div class="py-1 mx-3 mt-2">
-            <b>Display options</b>
-        </div>
-        <div class="flex justify-start p-2">
-            <div class="p-1">
-                <label for="his" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
-                    <input id="his" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">His</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-            <div class="p-1">
-                <label for="asp" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
-                    <input id="asp" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">Asp</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-            <div class="p-1">
-                <label for="glu" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
-                    <input id="glu" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">Glu</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-            <div class="p-1">
-                <label for="cys" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
-                    <input id="cys" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">Cys</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
+            <div class="flex justify-start p-2">
+                <div class="p-1">
+                    <label for="his" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                        <input id="his" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">His</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1">
+                    <label for="asp" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                        <input id="asp" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">Asp</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1">
+                    <label for="glu" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                        <input id="glu" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">Glu</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1">
+                    <label for="cys" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                        <input id="cys" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">Cys</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
 
-            <div class="p-1 ">
-                <label for="pdbmetal" class="relative flex-inline items-center isolate p-4 rounded-2xl">
-                    <input id="pdbmetal" type="checkbox"
-                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">Zn<sup>2+</sup></span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-            <div class="p-1 ">
-                <label for="alphafold" class="relative flex-inline items-center isolate p-4 rounded-2xl">
-                    <input id="alphafold" type="checkbox"
-                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" checked />
-                    <span class="ml-2 relative z-20 text-gray-900 flex-1">AlphaFold v2 (cyan)</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
+                <div class="p-1 ">
+                    <label for="pdbmetal" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                        <input id="pdbmetal" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">Zn<sup>2+</sup></span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1 ">
+                    <label for="alphafold" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                        <input id="alphafold" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" checked />
+                        <span class="ml-2 relative z-20 text-gray-900 flex-1">AlphaFold v2</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
 
-            <!-- <div class="p-3 relative z-0">
+                <!-- <div class="p-3 relative z-0">
             <input type="text" name="resids" id="floating_company" class="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
             <label for="resids" class="absolute text-base text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 -z-10 origin-[0] mx-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3">Resids (ex 94,96,96)</label>
         </div> -->
+            </div>
+            <div class="py-2 mx-3 mt-2">
+                <b>Putative metal ion binding sites</b>
+            </div>
+            <div class="flex p-2 mb-3">
+
+                <div class="p-1">
+                    <label for="metal3d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                        <input id="metal3d" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">Metal3D</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1">
+                    <label for="metal1d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                        <input id="metal1d" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">Metal1D</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1">
+                    <label for="mib" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                        <input id="mib" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">MIB</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+                <div class="p-1">
+                    <label for="biometall" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                        <input id="biometall" type="checkbox"
+                            class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                        <span class="ml-2 relative z-20">BioMetAll</span>
+                        <div
+                            class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="viewercontainer" class="body row">
+
+
+                <!-- <div id='viewer' class='viewer_3Dmoljs' data-href="2cba.pdb" data-datatype="pdb" data-callback='initShapes' data-backgroundcolor='0xf6f6f6'></div> -->
+                <div id='viewer' class='viewer_3Dmoljs'></div>
+
+            </div>
+
         </div>
-        <div class="py-2 mx-3 mt-2">
-            <b>Putative metal ion binding sites</b>
-        </div>
-        <div class="flex p-2">
+        <div class="text-sm absolute top-0 right-0 w-72 mt-16">
 
-            <div class="p-1">
-                <label for="metal3d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
-                    <input id="metal3d" type="checkbox"
-                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">Metal3D</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
+            <div class="font-medium">AlphaFold Model Confidence:</div>
+            <div class="flex space-x-2 py-1"><span class="w-4 h-4"
+                    style="background-color: rgb(0, 83, 214);">&nbsp;</span><span class="legendlabel">Very high
+                    (pLDDT &gt; 90)</span></div>
+            <div class="flex space-x-2 py-1"><span class="w-4"
+                    style="background-color: rgb(101, 203, 243);">&nbsp;</span><span class="legendlabel">Confident
+                    (90 &gt; pLDDT &gt; 70)</span></div>
+            <div class="flex space-x-2 py-1"><span class="w-4"
+                    style="background-color: rgb(255, 219, 19);">&nbsp;</span><span class="legendlabel">Low (70 &gt;
+                    pLDDT &gt; 50)</span></div>
+            <div class="flex space-x-2 py-1"><span class="w-4"
+                    style="background-color: rgb(255, 125, 69);">&nbsp;</span><span class="legendlabel">Very low
+                    (pLDDT &lt; 50)</span></div>
+            <!---->
+            <div class="row column legendDesc"> AlphaFold produces a per-residue confidence
+                score (pLDDT) between 0 and 100. Some regions below 50 pLDDT may be unstructured in isolation.
             </div>
-            <div class="p-1">
-                <label for="metal1d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
-                    <input id="metal1d" type="checkbox"
-                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">Metal1D</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-            <div class="p-1">
-                <label for="mib" class="relative flex-inline items-center isolate p-4 rounded-2xl">
-                    <input id="mib" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">MIB</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-            <div class="p-1">
-                <label for="biometall" class="relative flex-inline items-center isolate p-4 rounded-2xl">
-                    <input id="biometall" type="checkbox"
-                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
-                    <span class="ml-2 relative z-20">BioMetAll</span>
-                    <div
-                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
-                    </div>
-                </label>
-            </div>
-        </div>
-
-        <div id="viewercontainer" class="body row">
-
-
-            <!-- <div id='viewer' class='viewer_3Dmoljs' data-href="2cba.pdb" data-datatype="pdb" data-callback='initShapes' data-backgroundcolor='0xf6f6f6'></div> -->
-            <div id='viewer' class='viewer_3Dmoljs'></div>
-
         </div>
     </div>
+
+
 </body>
 
 </html>
