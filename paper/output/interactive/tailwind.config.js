@@ -1,6 +1,6 @@
 module.exports = {
   content: [
-    'index.html',
+    'index.html','index_diffModel.html'
   ],
   theme: {
     extend: {},
