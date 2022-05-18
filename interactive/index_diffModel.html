@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Metal3D visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery.min.js"></script>
+    <script src="rangeslider.min.js"></script>
+    <style>
+        .viewer_3Dmoljs {
+            display: block;
+            position: relative;
+            width: 80vw;
+            height: 60vh;
+        }
+    </style>
+
+
+
+    <!-- <link type="text/css" rel="stylesheet" href="https://3dmol.csb.pitt.edu/css/index.css"> -->
+    <script src="3Dmol-nojquery-min.js"></script>
+    <script>
+        function draw(props) {
+
+            let element = $('#viewer');
+
+            let config = { backgroundColor: 'white' };
+            viewer = $3Dmol.createViewer(element, config);
+            let pdbUri = props['pdb'] + '.pdb';
+            $.ajax(pdbUri, {
+                success: function (data) {
+                    let v = viewer;
+                    v.addModel(data, "pdb");                       /* load data */
+                    v.setStyle({}, { cartoon: { color: 'gray' } });  /* style all atoms */
+                    // if (props['surface']){
+                    //     surf1 = v.addSurface($3Dmol.SurfaceType.VDW, {color:'white', opacity:0.95}, {hetflag:false}, {hetflag:false}) 
+                    // }
+                    v.zoomTo();                                      /* set camera */
+                    v.render();                                      /* render scene */
+                    v.zoom(1);                               /* slight zoom */
+                    v.getModel(0).setHoverable({}, true,
+                        function (atom, viewer, event, container) {
+
+                            if (!atom.label) {
+                                atom.label = v.addLabel(props['pdb'] + ' ' + atom.resn + ":" + atom.atom, { position: atom, backgroundColor: 'mintcream', fontColor: 'black' });
+                            }
+                        },
+                        function (atom) {
+
+                            if (atom.label) {
+                                v.removeLabel(atom.label);
+                                delete atom.label;
+                            }
+                        }
+                    );
+                    if (props['his']) {
+                        v.getModel(0).setStyle({ resn: 'HIS' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                        v.getModel(5).setStyle({ resn: 'HIS' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    }
+                    if (props['asp']) {
+                        v.getModel(0).setStyle({ resn: 'ASP' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                        v.getModel(5).setStyle({ resn: 'ASP' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    }
+                    if (props['cys']) {
+                        v.getModel(0).setStyle({ resn: 'CYS' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                        v.getModel(5).setStyle({ resn: 'CYS' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    }
+                    if (props['glu']) {
+                        v.getModel(0).setStyle({ resn: 'GLU' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                        v.getModel(5).setStyle({ resn: 'GLU' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    }
+                    if (props['pdbmetal']) {
+                        v.getModel(0).setStyle({ resn: 'ZN' }, { sphere: { colorscheme: "grayCarbon" }, cartoon: {} });
+                    }
+                },
+                error: function (hdr, status, err) {
+                    console.error("Failed to load PDB " + pdbUri + ": " + err);
+                },
+
+            });
+            $.get('metal3d_probes_' + props['pdb'] + '.pdb', function (data) {
+                viewer.addModel(data, "pdb");
+
+                let columns = data.split("\n");
+                metal3dcolors = []
+                for (var i = 0; i < columns.length - 1; i++) {
+                    metal3dcolors[i] = "rgb(0,128," + 255 * parseFloat(columns[i].substr(55, 5)) + ")"
+                }
+
+                if (props['metal3d']) {
+                    viewer.getModel(1).setStyle({ 'resn': "ZN" }, { 'sphere': { 'colorscheme': { 'prop': 'index', 'map': metal3dcolors } } });
+                }
+                viewer.getModel(1).setHoverable({}, true,
+                    function (atom, viewer, event, container) {
+                        if (!atom.label) {
+                            atom.label = viewer.addLabel('ZN p=' + atom.pdbline.substring(55, 60), { position: atom, backgroundColor: 'mintcream', fontColor: 'black' });
+                        }
+                    },
+                    function (atom, viewer) {
+                        if (atom.label) {
+                            viewer.removeLabel(atom.label);
+                            delete atom.label;
+                        }
+                    }
+                );
+                viewer.render();
+            }, 'text');
+            $.get('biometall_probes_' + props['pdb'] + '.pdb', function (data) {
+                viewer.addModel(data, "pdb");
+                viewer.getModel(2).setStyle()
+                if (props['biometall']) {
+                    viewer.getModel(2).setStyle({ 'atom': 'XE' }, { 'sphere': { 'scale': 0.2 } });
+                    viewer.getModel(2).setStyle({ 'atom': 'S' }, { 'sphere': { 'scale': 0.5 } });
+
+                }
+                viewer.getModel(2).setHoverable({}, true,
+                    function (atom, viewer, event, container) {
+                        if (!atom.label) {
+                            let l = ""
+                            if (atom.atom == "S") {
+                                l = 'BioMetAll: cluster center'
+                            }
+                            if (atom.atom == 'XE') {
+                                l = "BioMetAll: possible ZN"
+                            }
+                            atom.label = viewer.addLabel(l, { position: atom, backgroundColor: 'mintcream', fontColor: 'black' });
+                        }
+                    },
+                    function (atom, viewer) {
+                        if (atom.label) {
+                            viewer.removeLabel(atom.label);
+                            delete atom.label;
+                        }
+                    }
+                );
+
+                viewer.render();
+            }, 'text');
+
+            $.get('metal1d_probes_' + props['pdb'] + '.pdb', function (data) {
+                viewer.addModel(data, "pdb");
+                viewer.getModel(3).setStyle()
+
+                if (props['metal1d']) {
+                    viewer.getModel(3).setStyle({ 'resn': 'ZN' }, { 'sphere': { 'colorScheme': 'grayCarbon' } });
+                }
+
+                viewer.getModel(3).setHoverable({}, true,
+                    function (atom, viewer, event, container) {
+                        if (!atom.label) {
+                            atom.label = viewer.addLabel("Metal1D", { position: atom, backgroundColor: 'mintcream', fontColor: 'black' });
+                        }
+                    },
+                    function (atom, viewer) {
+                        if (atom.label) {
+                            viewer.removeLabel(atom.label);
+                            delete atom.label;
+                        }
+                    }
+                );
+
+                viewer.render();
+            }, 'text');
+
+            $.get('mib_probes_' + props['pdb'] + '.pdb', function (data) {
+                viewer.addModel(data, "pdb");
+                let columns = data.split("\n");
+                let colors = []
+                for (var i = 0; i < columns.length - 1; i++) {
+                    mibcolors[i] = "rgb(0,128," + 255 * parseFloat(columns[i].substr(55, 5)) + ")"
+                }
+                if (props['mib']) {
+                    viewer.getModel(4).setStyle({ 'resn': "ZN" }, { 'sphere': { 'colorscheme': { 'prop': 'index', 'map': mibcolors } } });
+                }
+                viewer.getModel(4).setHoverable({}, true,
+                    function (atom, viewer, event, container) {
+                        if (!atom.label) {
+                            atom.label = viewer.addLabel('MIB: ZN t=' + atom.pdbline.substring(55, 60), { position: atom, backgroundColor: 'mintcream', fontColor: 'black' });
+                        }
+                    },
+                    function (atom, viewer) {
+                        if (atom.label) {
+                            viewer.removeLabel(atom.label);
+                            delete atom.label;
+                        }
+                    }
+                );
+            }, 'text');
+            $.get('metal_' + props['pdb'] + '_metal.cube', function (data) {
+                voldata = new $3Dmol.VolumeData(data, "cube");
+                viewer.addIsosurface(voldata, { isoval: isoval, color: "blue", alpha: 0.85, smoothness: 1 });
+                viewer.render();
+            }, 'text');
+
+            $.get(props['pdb'] + '_AF_v2.pdb', function (data) {
+                viewer.addModel(data, "pdb");
+                viewer.getModel(5).setStyle({}, { cartoon: { color: 'cyan' } });  /* style all atoms */
+                viewer.render();
+            }, 'text');
+            //initShapes(viewer, isoval)
+            viewer.render()
+        }
+    </script>
+
+    <script>
+        var props = {
+            "his": false,
+            "asp": false,
+            "glu": false,
+            "cys": false,
+            "pdbmetal": false,
+            "metal3d": false,
+            "metal1d": false,
+            "mib": false,
+            "biometall": false,
+            "alphafold": true,
+            "pdb": "2cba"
+        }
+        var isoval = 0.5
+        var viewer = null;
+        var metal3dcolors = null
+        var mibcolors = []
+        var voldata = null
+
+        $(document).ready(function () {
+
+            draw(props)
+
+            $('#his').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['his'] = true
+                    viewer.getModel(0).setStyle({ resn: 'HIS' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                    viewer.getModel(5).setStyle({ resn: 'HIS' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    viewer.render()
+                } else {
+                    props['his'] = false
+                    viewer.setStyle({ resn: 'HIS' }, { cartoon: {} });
+                    viewer.render()
+                }
+
+            });
+            $('#asp').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['asp'] = true
+                    viewer.getModel(0).setStyle({ resn: 'ASP' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                    viewer.getModel(5).setStyle({ resn: 'ASP' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    viewer.render()
+                } else {
+                    props['asp'] = false
+                    viewer.setStyle({ resn: 'ASP' }, { cartoon: {} });
+                    viewer.render()
+                }
+
+            });
+            $('#cys').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['cys'] = true
+                    viewer.getModel(0).setStyle({ resn: 'CYS' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                    viewer.getModel(5).setStyle({ resn: 'CYS' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    viewer.render()
+                } else {
+                    props['cys'] = false
+                    viewer.setStyle({ resn: 'CYS' }, { cartoon: {} });
+                    viewer.render()
+                }
+
+            });
+            $('#glu').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['glu'] = true
+                    viewer.getModel(0).setStyle({ resn: 'GLU' }, { stick: { colorscheme: "grayCarbon" }, cartoon: {} });
+                    viewer.getModel(5).setStyle({ resn: 'GLU' }, { stick: { colorscheme: "cyanCarbon" }, cartoon: {} });
+                    viewer.render()
+                } else {
+                    props['glu'] = false
+                    viewer.setStyle({ resn: 'GLU' }, { cartoon: {} });
+                    viewer.render()
+                }
+
+            });
+            $('#pdbmetal').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['pdbmetal'] = true
+                    viewer.getModel(0).setStyle({ resn: 'ZN' }, { sphere: { colorscheme: "grayCarbon" }, cartoon: {} });
+                    viewer.render()
+                } else {
+                    props['pdbmetal'] = false
+                    viewer.getModel(0).setStyle({ resn: 'ZN' }, { cartoon: {} });
+                    viewer.render()
+                }
+
+            });
+
+            $('#alphafold').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['alphafold'] = true
+                    viewer.getModel(5).setStyle({}, { cartoon: { color: 'cyan' } });  /* style all atoms */
+                    viewer.render()
+                } else {
+                    props['alphafold'] = false
+                    viewer.getModel(5).setStyle({}, {});  /* style all atoms */
+                    viewer.render()
+                }
+
+            });
+
+
+
+
+            $('#rangeslider').rangeslider().on('change', function (el) {
+                isoval = parseFloat(el.target.value);
+                $("#isovalue").text(el.target.value)
+                viewer.addIsosurface(voldata, { isoval: parseFloat(el.target.value), color: "blue", alpha: 0.85, smoothness: 1 });
+                viewer.render();
+            });
+
+            $('#metal3d').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['metal3d'] = true
+                    viewer.getModel(1).setStyle({ 'resn': "ZN" }, { 'sphere': { 'colorscheme': { 'prop': 'index', 'map': metal3dcolors } } });
+                    viewer.render()
+                } else {
+                    props['metal3d'] = false
+                    viewer.getModel(1).setStyle({ 'resn': "ZN" }, {});
+                    viewer.render()
+                }
+            });
+            $('#mib').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['mib'] = true
+                    viewer.getModel(4).setStyle({ 'resn': "ZN" }, { 'sphere': { 'colorscheme': { 'prop': 'index', 'map': mibcolors } } });
+                    viewer.render()
+                } else {
+                    props['mib'] = false
+                    viewer.getModel(4).setStyle({ 'resn': "ZN" }, {});
+                    viewer.render()
+                }
+            });
+
+            $('#biometall').change(function () {
+                if (this.checked) {
+                    props['biometall'] = true
+                    viewer.getModel(2).setStyle({ 'atom': 'XE' }, { 'sphere': { 'scale': 0.2 } });
+                    viewer.getModel(2).setStyle({ 'atom': 'S' }, { 'sphere': { 'scale': 0.5 } });
+                    viewer.render()
+                } else {
+                    props['biometall'] = false
+                    viewer.getModel(2).setStyle({ 'atom': 'XE' }, {});
+                    viewer.getModel(2).setStyle({ 'atom': 'S' }, {});
+                    viewer.render()
+                }
+            });
+            $('#pdb').change(function () {
+                props['pdb'] = this.value
+                draw(props)
+            });
+            $('#metal1d').change(function () {
+                // this will contain a reference to the checkbox   
+                if (this.checked) {
+                    props['metal1d'] = true
+                    viewer.getModel(3).setStyle({ 'resn': 'ZN' }, { 'sphere': { 'colorScheme': 'grayCarbon' } });
+                    viewer.render()
+                } else {
+                    props['metal1d'] = false
+                    viewer.getModel(3).setStyle({ 'resn': 'ZN' }, {});
+                    viewer.render()
+                }
+
+            });
+        })
+    </script>
+
+</head>
+
+<body class="h-full w-full">
+    <div id="content" class="p-4">
+        <div class="flex items-center mx-3 py-1">
+            <div class="flex flex-1  items-center justify-end pr-4 space-x-2">
+                <span class="whitespace-nowrap">
+                    <select class="rounded" id="pdb">
+                        <option value="2cba">Carbonic anhydrase (2CBA)</option>
+                        <option value="3rzv">AMSH (3RZV)</option>
+                    </select> </span>
+
+            </div>
+            <div class="flex flex-1  items-center justify-end pr-4 space-x-2">
+                <span class="whitespace-nowrap">Metal3D <i>p(Metal)</i> </span>
+                <span id="isovalue" class="bg-gray-200 p-1 rounded">0.5</span>
+            </div>
+            <input class="w-full" type="range" id="rangeslider" min="0" max="1" step="0.025" value=0.5>
+        </div>
+        <div class="py-1 mx-3 mt-2">
+            <b>Display options</b>
+        </div>
+        <div class="flex justify-start p-2">
+            <div class="p-1">
+                <label for="his" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                    <input id="his" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">His</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1">
+                <label for="asp" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                    <input id="asp" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">Asp</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1">
+                <label for="glu" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                    <input id="glu" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">Glu</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1">
+                <label for="cys" class="relative flex-inline items-center isolate p-4 rounded-2xl cursor-pointer">
+                    <input id="cys" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">Cys</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+
+            <div class="p-1 ">
+                <label for="pdbmetal" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                    <input id="pdbmetal" type="checkbox"
+                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">Zn<sup>2+</sup></span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1 ">
+                <label for="alphafold" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                    <input id="alphafold" type="checkbox"
+                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" checked />
+                    <span class="ml-2 relative z-20 text-gray-900 flex-1">AlphaFold v2 (cyan)</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+
+            <!-- <div class="p-3 relative z-0">
+            <input type="text" name="resids" id="floating_company" class="block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+            <label for="resids" class="absolute text-base text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 -z-10 origin-[0] mx-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3">Resids (ex 94,96,96)</label>
+        </div> -->
+        </div>
+        <div class="py-2 mx-3 mt-2">
+            <b>Putative metal ion binding sites</b>
+        </div>
+        <div class="flex p-2">
+
+            <div class="p-1">
+                <label for="metal3d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                    <input id="metal3d" type="checkbox"
+                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">Metal3D</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1">
+                <label for="metal1d" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                    <input id="metal1d" type="checkbox"
+                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">Metal1D</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1">
+                <label for="mib" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                    <input id="mib" type="checkbox" class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">MIB</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+            <div class="p-1">
+                <label for="biometall" class="relative flex-inline items-center isolate p-4 rounded-2xl">
+                    <input id="biometall" type="checkbox"
+                        class="relative peer z-20 text-blue-600 rounded-md focus:ring-0" />
+                    <span class="ml-2 relative z-20">BioMetAll</span>
+                    <div
+                        class="absolute inset-0 bg-white peer-checked:bg-blue-50 peer-checked:border-blue-300 z-10 border rounded-2xl">
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div id="viewercontainer" class="body row">
+
+
+            <!-- <div id='viewer' class='viewer_3Dmoljs' data-href="2cba.pdb" data-datatype="pdb" data-callback='initShapes' data-backgroundcolor='0xf6f6f6'></div> -->
+            <div id='viewer' class='viewer_3Dmoljs'></div>
+
+        </div>
+    </div>
+</body>
+
+</html>
