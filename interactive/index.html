@@ -32,6 +32,7 @@
             $.ajax(pdbUri, {
                 success: function (data) {
                     let v = viewer;
+                    console.log(data)
                     v.addModel(data, "pdb");                      
                     v.setStyle({}, { cartoon: { color: 'gray' } }); 
                     v.zoomTo();  
