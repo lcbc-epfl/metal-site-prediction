@@ -1,5 +1,5 @@
 ---
-title: "Accurate prediction of zinc ion location using deep learning"
+title: "Accurate prediction of transition metal location from a single structure using deep learning"
 keywords:
   - metal
   - protein engineering
@@ -23,7 +23,7 @@ authors:
     initials: UR
     orcid: 0000-0002-1704-8591
     email: ursula.roethlisberger@epfl.ch
-    symbol_str: "†"
+    symbol_str: "✉"
     affiliations:
       - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
  
