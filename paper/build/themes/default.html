@@ -2,7 +2,7 @@
 
 <style>
     /* import google fonts */
-    @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,700");
+    @import url("https://fonts.googleapis.com/css?family=Inter:400,600,700");
     @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro");
 
     /* -------------------------------------------------- */
@@ -12,7 +12,7 @@
     /* all elements */
     * {
         /* force sans-serif font unless specified otherwise */
-        font-family: "Open Sans", "Helvetica", sans-serif;
+        font-family: "Inter", "Helvetica", sans-serif;
 
         /* prevent text inflation on some mobile browsers */
         -webkit-text-size-adjust: none !important;
@@ -22,12 +22,13 @@
     }
 
     @media only screen {
+
         /* "page" element */
         body {
             position: relative;
             box-sizing: border-box;
-            font-size: 12pt;
-            line-height: 1.5;
+            font-size: 1.15rem;
+            line-height: 1.75rem;
             max-width: 8.5in;
             margin: 20px auto;
             padding: 40px;
@@ -40,6 +41,7 @@
 
     /* when on screen < 8.5in wide */
     @media only screen and (max-width: 8.5in) {
+
         /* "page" element */
         body {
             padding: 20px;
@@ -82,20 +84,26 @@
 
     /* heading font sizes */
     h1 {
-        font-size: 2em;
+        font-size: 2rem;
+        line-height: 2.6rem;
     }
+
     h2 {
         font-size: 1.5em;
     }
-    h3{
+
+    h3 {
         font-size: 1.35em;
     }
+
     h4 {
         font-size: 1.25em;
     }
+
     h5 {
         font-size: 1.15em;
     }
+
     h6 {
         font-size: 1em;
     }
@@ -105,12 +113,12 @@
     /* -------------------------------------------------- */
 
     /* manuscript title */
-    header > h1 {
+    header>h1 {
         margin: 0;
     }
 
     /* manuscript title caption text (ie "automatically generated on") */
-    header + p {
+    header+p {
         text-align: center;
         margin-top: 10px;
     }
@@ -207,12 +215,17 @@
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
+        border: 1px solid #c0c0c0;
+        padding: 10px;
+        border-radius: 5px;
     }
 
     /* figure caption */
     figcaption {
         padding: 0;
         padding-top: 10px;
+        line-height: 1.5rem;
+        font-size: 0.8rem;
     }
 
     /* figure image element */
@@ -224,7 +237,7 @@
     }
 
     /* figure auto-number */
-    img + figcaption > span:first-of-type {
+    img+figcaption>span:first-of-type {
         font-weight: bold;
         margin-right: 5px;
     }
@@ -240,7 +253,8 @@
         width: 100%;
         margin-left: auto;
         margin-right: auto;
-        border-bottom:1px solid rgba(0, 0, 0, 0.75);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.75);
+        font-size: 1rem;
     }
 
     /* table cells */
@@ -269,11 +283,13 @@
         text-align: left;
         padding: 0;
         padding-bottom: 10px;
+        line-height: 1.5rem;
+        font-size: 0.8rem;
     }
 
     /* table auto-number */
-    table > caption > span:first-of-type,
-    div.table_wrapper > table > caption > span:first-of-type {
+    table>caption>span:first-of-type,
+    div.table_wrapper>table>caption>span:first-of-type {
         font-weight: bold;
         margin-right: 5px;
     }
@@ -293,7 +309,7 @@
     }
 
     /* inline code, ie code within normal text */
-    :not(pre) > code {
+    :not(pre)>code {
         padding: 0 4px;
         background-color: #eeeeee;
         color: #000000;
@@ -338,7 +354,7 @@
     }
 
     /* paragraph in banner */
-    .banner > p {
+    .banner>p {
         margin: 0;
     }
 
@@ -349,51 +365,67 @@
     .white {
         background: #ffffff;
     }
+
     .lightgrey {
         background: #eeeeee;
     }
+
     .grey {
         background: #757575;
     }
+
     .darkgrey {
         background: #424242;
     }
+
     .black {
         background: #000000;
     }
+
     .lightred {
         background: #ffcdd2;
     }
+
     .lightyellow {
         background: #ffecb3;
     }
+
     .lightgreen {
         background: #dcedc8;
     }
+
     .lightblue {
         background: #e3f2fd;
     }
+
     .lightpurple {
         background: #f3e5f5;
     }
+
     .red {
         background: #f44336;
     }
+
     .orange {
         background: #ff9800;
     }
+
     .yellow {
         background: #ffeb3b;
     }
+
     .green {
         background: #4caf50;
     }
+
     .blue {
         background: #2196f3;
     }
+
     .purple {
         background: #9c27b0;
     }
+
     .white,
     .lightgrey,
     .lightred,
@@ -414,6 +446,7 @@
     .yellow a {
         color: #000000;
     }
+
     .grey,
     .darkgrey,
     .black,
@@ -485,7 +518,7 @@
     }
 
     /* icon button inner svg image */
-    .icon_button > svg {
+    .icon_button>svg {
         height: 16px;
     }
 
@@ -511,7 +544,8 @@
         }
 
         /* document and "page" elements */
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -535,7 +569,8 @@
         }
 
         /* figures and tables */
-        figure, table {
+        figure,
+        table {
             font-size: 0.85em;
         }
 
@@ -634,12 +669,13 @@
         margin: 20px 0;
     }
 
-    .tablenos > table {
+    .tablenos>table {
         /* move margins from table to table_wrapper to allow margin collapsing */
         margin: 0;
     }
 
     @media only screen {
+
         /* tablenos wrapper */
         .tablenos {
             /* show scrollbar on tables if necessary to prevent overflow */
@@ -665,7 +701,7 @@
     /* -------------------------------------------------- */
 
     /* mathjax containers */
-    .math.display > span:not(.MathJax_Preview) {
+    .math.display>span:not(.MathJax_Preview) {
         /* turn inline element (no dimensions) into block (allows fixed width and thus scrolling) */
         display: flex !important;
         overflow-x: auto !important;
@@ -683,21 +719,22 @@
     }
 
     /* equation auto-number */
-    span[id^="eq:"] > span.math.display + span {
+    span[id^="eq:"]>span.math.display+span {
         font-weight: 600;
     }
 
     /* equation */
-    span[id^="eq:"] > span.math.display > span {
+    span[id^="eq:"]>span.math.display>span {
         /* nudge to make room for equation auto-number and anchor */
         margin-right: 60px !important;
     }
- 
+
     /* -------------------------------------------------- */
     /* anchors plugin */
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* anchor button */
         .anchor {
             opacity: 0;
@@ -710,7 +747,7 @@
         }
 
         /* anchor buttons when hovered/focused and anything containing an anchor button when hovered */
-        *:hover > .anchor,
+        *:hover>.anchor,
         .anchor:hover,
         .anchor:focus {
             opacity: 1;
@@ -741,13 +778,14 @@
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* accordion arrow button */
         .accordion_arrow {
             margin-right: 10px;
         }
 
         /* arrow icon when <h2> data-collapsed attribute true */
-        h2[data-collapsed="true"] > .accordion_arrow > svg {
+        h2[data-collapsed="true"]>.accordion_arrow>svg {
             transform: rotate(-90deg);
         }
 
@@ -776,6 +814,7 @@
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* tooltip container */
         #tooltip {
             position: absolute;
@@ -797,15 +836,15 @@
         }
 
         /* tooltip copy of paragraphs and figures */
-        #tooltip_content > p,
-        #tooltip_content > figure {
+        #tooltip_content>p,
+        #tooltip_content>figure {
             margin: 0;
             max-height: 320px;
             overflow-y: auto;
         }
 
         /* tooltip copy of <img> */
-        #tooltip_content > figure > img {
+        #tooltip_content>figure>img {
             max-height: 260px;
         }
 
@@ -816,18 +855,18 @@
         }
 
         /* navigation bar previous/next buton */
-        #tooltip_nav_bar > .icon_button {
+        #tooltip_nav_bar>.icon_button {
             position: relative;
             top: 3px;
         }
 
         /* navigation bar previous button */
-        #tooltip_nav_bar > .icon_button:first-of-type {
+        #tooltip_nav_bar>.icon_button:first-of-type {
             margin-right: 5px;
         }
 
         /* navigation bar next button */
-        #tooltip_nav_bar > .icon_button:last-of-type {
+        #tooltip_nav_bar>.icon_button:last-of-type {
             margin-left: 5px;
         }
     }
@@ -844,6 +883,7 @@
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* jump button */
         .jump_arrow {
             position: relative;
@@ -864,6 +904,7 @@
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* anything with data-highlighted attribute true */
         [data-highlighted="true"] {
             background: #ffeb3b;
@@ -879,9 +920,11 @@
             0% {
                 background: none;
             }
+
             10% {
                 background: #bbdefb;
             }
+
             100% {
                 background: none;
             }
@@ -898,6 +941,7 @@
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* toc panel */
         #toc_panel {
             box-sizing: border-box;
@@ -945,7 +989,7 @@
         }
 
         /* toc panel header when panel open */
-        #toc_panel[data-open="true"] > #toc_header {
+        #toc_panel[data-open="true"]>#toc_header {
             border-bottom: solid 1px #bdbdbd;
         }
 
@@ -955,8 +999,8 @@
         }
 
         /* hide toc list and header text when closed */
-        #toc_panel[data-open="false"] > #toc_header > *:not(#toc_button),
-        #toc_panel[data-open="false"] > #toc_list {
+        #toc_panel[data-open="false"]>#toc_header>*:not(#toc_button),
+        #toc_panel[data-open="false"]>#toc_list {
             display: none;
         }
 
@@ -1032,6 +1076,7 @@
 
     /* when on screen < 8.5in wide */
     @media only screen and (max-width: 8.5in) {
+
         /* push <body> ("page") element down to make room for toc icon */
         .toc_body_nudge {
             padding-top: 60px;
@@ -1055,6 +1100,7 @@
     /* -------------------------------------------------- */
 
     @media only screen {
+
         /* regular <img> in document when hovered */
         .lightbox_document_img:hover {
             cursor: pointer;
@@ -1146,12 +1192,12 @@
         }
 
         /* navigation button icon */
-        .lightbox_button > svg {
+        .lightbox_button>svg {
             height: 25px;
         }
 
         /* figure auto-number */
-        #lightbox_caption > span:first-of-type {
+        #lightbox_caption>span:first-of-type {
             font-weight: bold;
             margin-right: 5px;
         }
@@ -1169,6 +1215,7 @@
 
     /* when on screen < 480px wide */
     @media only screen and (max-width: 480px) {
+
         /* make navigation buttons skinnier on small screens to make more room for caption text */
         .lightbox_button {
             width: 50px;
@@ -1204,7 +1251,7 @@
     }
 
     /* hypothesis button svg */
-    #hypothesis_button > svg {
+    #hypothesis_button>svg {
         position: relative;
         top: -4px;
     }
@@ -1255,48 +1302,67 @@
 
     thead {
         border-top: 1px solid rgba(0, 0, 0, 0.75);
-border-left: 0px;
-border-right: 0px;
-border-bottom: 2px solid rgba(0, 0, 0, 0.75);
+        border-left: 0px;
+        border-right: 0px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.75);
     }
 
 
-    .download{
-        background-color: #e7e7e7; /* Green */
-  border: none;
-  color: black;
-  padding: 1em 1.5em;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 0.75em;
-  text-align: right;
-  margin-top: 10px;
-  cursor: pointer;
+    .download {
+        background-color: #e7e7e7;
+        /* Green */
+        border: none;
+        color: black;
+        padding: 1em 1.5em;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.75em;
+        text-align: right;
+        margin-top: 10px;
+        cursor: pointer;
     }
-    .download:hover{
+
+    .download:hover {
         background-color: black;
-        color:#e7e7e7;
+        color: #e7e7e7;
     }
-    .tabulator-header{
-        border-top:1px solid rgba(0, 0, 0, 0.75);
-        border-bottom:2px solid rgba(0, 0, 0, 0.75)!important;
+
+    .tabulator-header {
+        border-top: 1px solid rgba(0, 0, 0, 0.75);
+        border-bottom: 2px solid rgba(0, 0, 0, 0.75) !important;
     }
-    .tabulator-row .tabulator-cell{
+
+    .tabulator-row .tabulator-cell {
         border: 0px;
     }
-    .tabulator-row{
+
+    .tabulator-row {
         border: 0px;
-        padding:5px 0;
+        padding: 5px 0;
     }
-    .tabulator .tabulator-header .tabulator-col{
-        border:0px;
-        padding:5px 0;
+
+    .tabulator .tabulator-header .tabulator-col {
+        border: 0px;
+        padding: 5px 0;
     }
 </style>
-   <!-- pandoc-eqnos: equation style -->
-   <style>
-    .eqnos { display: inline-block; position: relative; width: 100%; }
-    .eqnos br { display: none; }
-    .eqnos-number { position: absolute; right: 0em; top: 50%; line-height: 0; }
-  </style>
+<!-- pandoc-eqnos: equation style -->
+<style>
+    .eqnos {
+        display: inline-block;
+        position: relative;
+        width: 100%;
+    }
+
+    .eqnos br {
+        display: none;
+    }
+
+    .eqnos-number {
+        position: absolute;
+        right: 0em;
+        top: 50%;
+        line-height: 0;
+    }
+</style>
