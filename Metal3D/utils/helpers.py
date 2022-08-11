@@ -9,6 +9,7 @@ import numpy as np
 from moleculekit.molecule import Molecule
 from scipy.spatial import KDTree
 from sklearn.cluster import AgglomerativeClustering
+from tqdm.contrib.concurrent import process_map
 
 
 def create_grid_fromBB(boundingBox, voxelSize=1):
@@ -90,8 +91,9 @@ def get_all_protein_resids(pdb_file):
         prot = Molecule(pdb_file)
     except:
         exit("could not read file")
-    prot.filter("protein")
-    return prot.get("index", sel="name CA")
+    prot.filter("protein and not hydrogen")
+    # mapping = prot.renumberResidues(returnMapping=True)
+    return prot.get("index", "protein and name CA")
 
 
 def get_all_metalbinding_resids(pdb_file):
@@ -108,19 +110,18 @@ def get_all_metalbinding_resids(pdb_file):
         id of resids that are metal binding
 
     """
-
     try:
         prot = Molecule(pdb_file)
     except:
         exit("could not read file")
-    prot.filter("protein")
+    prot.filter("protein and not hydrogen")
     return prot.get(
         "index",
         sel="name CA and resname HIS HID HIE HIP CYS CYX GLU GLH GLN ASP ASH ASN GLN MET",
     )
 
 
-def compute_average_p_fast(point, cutoff=1):
+def compute_average_p_fast(point, cutoff=0.25):
     """Using KDTree find the closest gridpoints
 
     Parameters
@@ -136,7 +137,7 @@ def compute_average_p_fast(point, cutoff=1):
         Average probability of shape (1,)"""
     p = 0
     nearest_neighbors, indices = tree.query(
-        point, k=15, distance_upper_bound=cutoff, workers=1
+        point, k=20, distance_upper_bound=cutoff, workers=1
     )
     if np.min(nearest_neighbors) != np.inf:
         p = np.mean(output_v[indices[nearest_neighbors != np.inf]])
@@ -222,54 +223,37 @@ def write_cubefile(bb, pvalues, box_N, outname="Metal3D_pmap.cube", gridres=1):
 
 
 def find_unique_sites(
-    pvalues, grid, writeprobes=False, probefile="probes.pdb", threshold=5, p=0.75
+    pvalues, grid, writeprobes=False, probefile="probes.pdb", threshold=7, p=0.1
 ):
     """The probability voxels are points and the voxel clouds may contain multiple metals
-    This function finds the unique sites and returns the coordinates of the unique sites with the highest p for each cluster.
+    This function finds the unique sites and returns the coordinates of the unique sites.
     It uses the AgglomerativeClustering algorithm to find the unique sites.
-    The threshold is the maximum distance between two points in the same cluster it can be changed to get more metal points.
-
-    Parameters
-    ----------
-    pvalues : numpy.ndarray
-        Probability values of shape (N, 1)
-    grid : numpy.ndarray
-        Grid of shape (N, 3)
-    writeprobes : bool
-        If True, write the probes to a pdb file
-    probefile : str
-        Name of the output file
-    threshold : float
-        Maximum distance between two points in the same cluster
-    p : float
-        Minimum probability of a point to be considered a unique site
-
-    """
+    The threshold is the maximum distance between two points in the same cluster it can be changed to get more metal points."""
 
     points = grid[pvalues > p]
     point_p = pvalues[pvalues > p]
     if len(points) == 0:
-        print("no points available for clustering, no probes will be written")
+        print("no points available for clustering")
         return None
     clustering = AgglomerativeClustering(
         n_clusters=None, linkage="complete", distance_threshold=threshold
     ).fit(points)
-
     print(f"p={p}, n(metals):", clustering.n_clusters_)
-
     sites = []
     for i in range(clustering.n_clusters_):
         c_points = points[clustering.labels_ == i]
         c_points_p = point_p[clustering.labels_ == i]
 
-        position = c_points[np.argmax(c_points_p)]
+        # compute center of probabilities as COM
+        CM = np.average(c_points, axis=0, weights=c_points_p)
+        position = CM
         sites.append((position, np.max(c_points_p)))
     if writeprobes:
         print(f"writing probes to {probefile}")
         with open(probefile, "w") as f:
             for i, site in enumerate(sites):
                 f.write(
-                    f"HETATM  {i+1:3} ZN    ZN A {i+1:3}    {site[0][0]: 8.3f}{site[0][1]: 8.3f}{site[0][2]: 8.3f}  {site[1]:.2f}  0.0           ZN2+\n"
+                    f"HETATM  {i+1:3} ZN    ZN A  1    {site[0][0]: 8.3f}{site[0][1]: 8.3f}{site[0][2]: 8.3f}  {site[1]:.2f}  0.0           ZN2+\n"
                 )
 
 
@@ -384,3 +368,38 @@ def show_map(
         view.setStyle({"resn": "CYS"}, {"stick": {}, "cartoon": {"color": "gray"}})
 
     return view.show()
+
+
+def show_probes(probefile):
+    """visualizes the probefile in vmd
+
+    Parameters
+    ----------
+    probefile: str
+        path to probefile
+
+    """
+    try:
+        probes = Molecule(probefile)
+    except:
+        exit("could not read probefile")
+    probes.view(style="VDW", color="Occupancy", viewer="vmd")
+
+
+def maxprobability(pvalues, grid, pdb, label):
+    """Returns the point in the grid with the highest probability"""
+
+    print(
+        f"Max p={np.max(pvalues)} xyz: {grid[np.argmax(pvalues)][0]: .4f} {grid[np.argmax(pvalues)][1]: .4f} {grid[np.argmax(pvalues)][2]: .4f}"
+    )
+    if os.path.isfile("maxp_" + os.path.basename(label) + ".csv"):
+        with open("maxp_" + os.path.basename(label) + ".csv", "a") as fp:
+            fp.write(
+                f"{pdb},{np.max(pvalues):.4f}, {grid[np.argmax(pvalues)][0]: .4f}, {grid[np.argmax(pvalues)][1]: .4f}, {grid[np.argmax(pvalues)][2]: .4f}\n"
+            )
+    else:
+        with open("maxp_" + os.path.basename(label) + ".csv", "w") as fp:
+            fp.write("pdb,p,x,y,z\n")
+            fp.write(
+                f"{pdb},{np.max(pvalues):.4f}, {grid[np.argmax(pvalues)][0]: .4f}, {grid[np.argmax(pvalues)][1]: .4f}, {grid[np.argmax(pvalues)][2]: .4f}\n"
+            )
