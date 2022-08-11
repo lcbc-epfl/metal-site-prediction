@@ -1,5 +1,5 @@
 ---
-title: "Accurate prediction of transition metal location from a single structure using deep learning"
+title: "Accurate prediction of transition metal ion location via deep learning"
 keywords:
   - metal
   - protein engineering
@@ -19,7 +19,7 @@ authors:
     orcid: 0000-0003-1255-859X
     affiliations:
       - Laboratory of Computational Chemistry and Biochemistry, Institute of Chemical Sciences and Engineering, Swiss Federal Institute of Technology (EPFL) CH-1015 Lausanne, Switzerland
-  - name: Ursula Röthlisberger
+  - name: Ursula Rothlisberger
     initials: UR
     orcid: 0000-0002-1704-8591
     email: ursula.roethlisberger@epfl.ch

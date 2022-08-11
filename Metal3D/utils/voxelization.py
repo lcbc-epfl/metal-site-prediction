@@ -7,8 +7,6 @@ import numpy as np
 
 from moleculekit.molecule import Molecule
 from moleculekit.tools.voxeldescriptors import getVoxelDescriptors
-from moleculekit.tools.atomtyper import prepareProteinForAtomtyping
-from moleculekit.tools.preparation import systemPrepare
 
 
 class AtomtypingError(Exception):
@@ -78,10 +76,8 @@ def voxelize_single_notcentered(env):
     prot, id = env
 
     c = prot.get("coords", sel=f"index {id} and name CA")
-
     size = [16, 16, 16]  # size of box
     voxels = torch.zeros(8, 32, 32, 32)
-
     try:
         hydrophobic = prot.atomselect("element C")
         hydrophobic = hydrophobic.reshape(hydrophobic.shape[0], 1)
@@ -137,7 +133,8 @@ def voxelize_single_notcentered(env):
             validitychecks=False,
         )
     except:
-        raise VoxelizationError(f"voxelization of {id} failed")
+        print(f"{id}, voxelization input failed")
+        return None
     nchannels = prot_vox.shape[1]
     prot_vox_t = (
         prot_vox.transpose()
@@ -172,14 +169,16 @@ def processStructures(pdb_file, resids, clean=True):
     envs: list
         List of tuples (prot, idx) (N)
     """
+    """process 1 structure, executed on a single CPU"""
 
     start_time_processing = time.time()
 
     # load molecule using MoleculeKit
+
     try:
         prot = Molecule(pdb_file)
     except:
-        raise IOError("could not read pdbfile")
+        exit("could not read file")
 
     if clean:
         prot.filter("protein and not hydrogen")
@@ -189,21 +188,33 @@ def processStructures(pdb_file, resids, clean=True):
         try:
             environments.append((prot.copy(), idx))
         except:
-            print("ignoring " + idx)
+            print("ignore " + idx)
 
     prot_centers_list = []
     prot_n_list = []
     envs = []
 
-    results = [voxelize_single_notcentered(x) for x in environments]
+    cpuCount = multiprocessing.cpu_count()
+    p = Pool(cpuCount)
+
+    results = p.map(voxelize_single_notcentered, environments)  # prot_centers, prot_N
+
+    # remove None results
+    results = [x for x in results if x is not None]
 
     voxels = torch.empty(len(results), 8, 32, 32, 32, device="cuda")
+
+    if len(results) == 0:
+        exit(
+            "something went wrong with the voxelization, check that there are no discontinuities in the protein"
+        )
 
     vox_env, prot_centers_list, prot_n_list, envs = zip(*results)
 
     for i, vox_env in enumerate(vox_env):
         voxels[i] = vox_env
 
-    print(f"Voxelization took  {time.time() - start_time_processing:.3f} seconds ")
-
+    print("-----  Voxelization  -----")
+    print(f"-----  {time.time() - start_time_processing:.3f} seconds -----")
+    print("--------------------------")
     return voxels, prot_centers_list, prot_n_list, envs
