@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # Metal3D and Metal1D: Accurate prediction of transition metal ion location via deep learning
-=======
-# Metal3D and Metal1D: High accuracy prediction of Zn binding sites
->>>>>>> e3e95712a6a81e934bc98fd8812d007e1d785ebd
 
 If using this work please cite:
 
