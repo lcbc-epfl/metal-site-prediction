@@ -1,5 +1,8 @@
 # Metal3D and Metal1D: Accurate prediction of transition metal ion location via deep learning
 
+[![DOI](https://zenodo.org/badge/456988168.svg)](https://zenodo.org/badge/latestdoi/456988168)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lcbc-epfl/metal-site-prediction/blob/main/Metal3D/ColabMetal.ipynb)
+
 If using this work please cite:
 
 >Accurate prediction of transition metal ion location via deep learning
