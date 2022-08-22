@@ -1,4 +1,4 @@
-# Metal3D and Metal1D: High accuracy prediction of Zn binding sites
+# Metal3D and Metal1D: Accurate prediction of transition metal ion location via deep learning
 
 If using this work please cite:
 
@@ -43,10 +43,6 @@ Display all possible options
 
 The PDB codes used for training, validation and testing are available in `data`. 
 The PDB codes used for the selectivity analysis including the residue ids of the coordinating residues are available in `data` as `selectivity_analysis_sites.csv`. 
-
-# Training
-
-We will soon make the training code available. 
 
 # License
 

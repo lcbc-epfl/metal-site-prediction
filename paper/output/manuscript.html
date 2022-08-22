@@ -7,9 +7,9 @@
   <meta name="author" content="Simon L. Dürr" />
   <meta name="author" content="Andrea Levy" />
   <meta name="author" content="Ursula Rothlisberger" />
-  <meta name="dcterms.date" content="2022-07-27" />
+  <meta name="dcterms.date" content="2022-08-22" />
   <meta name="keywords" content="metal, protein engineering, deep learning" />
-  <title>Accurate prediction of transition metal ion location including low-homology targets via deep learning</title>
+  <title>Accurate prediction of transition metal ion location via deep learning</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -47,14 +47,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Accurate prediction of transition metal ion location including low-homology targets via deep learning</h1>
+<h1 class="title">Accurate prediction of transition metal ion location via deep learning</h1>
 </header>
 <!--  -->
 <div style="text-align:center">
 <p><small><em>
 This manuscript
 was automatically generated
-on July 27, 2022. <br>View <a href="doi">non-interactive version on BioRxiv</a>.
+on August 22, 2022. <br>View <a href="doi">non-interactive version on BioRxiv</a>.
 </em></small></p>
 </div>
 <!--  -->
@@ -137,7 +137,7 @@ We removed 56 sites from the list of zinc sites in the test set (189 total) that
 </figure>
 </div>
 <p>After assessment of how many sites the tools predict, another crucial metric is the spatial precision of the predictions. For the correctly identified sites (TP) we measured the mean absolute distance (MAD) between experimental and predicted position (Figure <a href="#fig:selectivity-mad">4</a>). The MAD for Metal3D at p=0.9 is 0.70 ± 0.64 Å and 0.73 ± 0.65 Å at p=0.25 indicating that low confidence predictions are still accurately placed inside the protein. The median MAD of predictions for Metal3D at p=0.9 is 0.52 Å indicating that for half of the predictions the model predicts at or better than the grid resolution of 0.5 Å.</p>
-<p>BioMetAll is not very precise with an MAD for correctly identified sites of 2.80 ± 1.30 Å. BioMetAll predicts many possible locations per cluster with some of them much closer to the experimental metal binding site than the cluster center. However, it does not provide any ranking of the probes within a cluster and therefore the cluster center was used for the distance calculation. Metal1D (MAD 2.06 ± 1.33 Å) which identifies more sites than BioMetAll is also more precise than BioMetAll. MIB t=1.9 detects sites with high precision (MAD 0.77 ± 1.09 Å) but it relies on the existence of homologous sites to align the found sites.</p>
+<p>BioMetAll is not very precise with a MAD for correctly identified sites of 2.80 ± 1.30 Å. BioMetAll predicts many possible locations per cluster with some of them much closer to the experimental metal binding site than the cluster center. However, it does not provide any ranking of the probes within a cluster and therefore the cluster center was used for the distance calculation. Metal1D (MAD 2.06 ± 1.33 Å) which identifies more sites than BioMetAll is also more precise than BioMetAll. MIB t=1.9 detects sites with high precision (MAD 0.77 ± 1.09 Å) but it relies on the existence of homologous sites to align the found sites.</p>
 <div id="fig:selectivity-mad" class="fignos">
 <figure>
 <img src="images/Figure3_selectivity_mad.png" alt="" /><figcaption><span>Figure 4:</span> <strong>Precision of predicted sites and selectivity for Zn<sup>2+</sup></strong> <strong>A</strong> Mean absolute deviation (MAD) of predicted zinc ion locations using Metal1D, Metal3D, BioMetAll and MIB on the test set used to train Metal1D and Metal3D for all correctly identified (TP) sites. n is the number of sites predicted by the tool. *For MIB we used 2 structures less because the server did not accept these structures. For each tool the whisker plot indicates the median (white dot) and the first quartiles (black box). <strong>B</strong> Recall for the zinc test set and 25 randomly drawn structures for other transition, alkali and earth-alkali metal ions for Metal3D using p=0.5 as cutoff.</figcaption>
@@ -242,7 +242,7 @@ The score is assigned to each amino acid considering all the other reference poi
 <p>The model takes as input a <code>(8,32,32,32)</code> tensor and outputs a <code>(1,32,32,32)</code> tensor containing the probability density for zinc centered on the Cɑ atom of the input residue.
 Predictions for a complete protein were obtained by voxelizing select residues of the protein (default all cysteines, histidines, aspartates, glutamates) and averaging the boxes using a global grid (Figure <a href="#fig:method">1</a> B). 98 % of the metal sites in the training data have at least one of those residues closeby wherefore this significant decrease in computational cost seems appropriate for most uses. The global grid is obtained by computing the bounding box of all points and using a regular spaced (0.5 Å) grid. For each grid point in the global grid the predicted probability maps within 0.25 Å of the grid point are averaged. The search is sped up using the KD-Tree implementation in scipy.<span class="citation" data-cites="8Miti2Gz"><sup><a href="#ref-8Miti2Gz" role="doc-biblioref">76</a></sup></span></p>
 <h5 id="metal-ion-placement">Metal ion placement</h5>
-<p>The global probability density is used to perform clustering of voxels above a certain probability threshold (default p=0.5, cutoff 7 Å) using AgglomerativeClustering implemented in scikit-learn.<span class="citation" data-cites="AujvwLp6"><sup><a href="#ref-AujvwLp6" role="doc-biblioref">77</a></sup></span> For each cluster the weighted average of the voxels in the cluster is computed using the probabilities for each point as the weight. This results in one metal placed per cluster.</p>
+<p>The global probability density is used to perform clustering of voxels above a certain probability threshold (default p=0.15, cutoff 7 Å) using AgglomerativeClustering implemented in scikit-learn.<span class="citation" data-cites="AujvwLp6"><sup><a href="#ref-AujvwLp6" role="doc-biblioref">77</a></sup></span> For each cluster the weighted average of the voxels in the cluster is computed using the probabilities for each point as the weight. This results in one metal placed per cluster.</p>
 <h5 id="visualization">Visualization</h5>
 <p>We make available a command line program and interactive notebook allowing the user to visualize the results. The averaged probability map is stored as a <code>cube</code> file. The most likely metal coordinates for use in subsequent processing are stored in a <code>pdb</code> file. The command line program uses VMD<span class="citation" data-cites="PEXAwV3k"><sup><a href="#ref-PEXAwV3k" role="doc-biblioref">78</a></sup></span> to visualize the input protein and the predicted density, for the jupyter notebook 3Dmol.js/py3Dmol<span class="citation" data-cites="BguJBlg6"><sup><a href="#ref-BguJBlg6" role="doc-biblioref">79</a></sup></span> is used.</p>
 <h4 id="evaluation">Evaluation</h4>

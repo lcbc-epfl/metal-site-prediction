@@ -1,11 +1,11 @@
 ---
-title: Accurate prediction of transition metal ion location including low-homology targets via deep learning
+title: Accurate prediction of transition metal ion location via deep learning
 keywords:
 - metal
 - protein engineering
 - deep learning
 lang: en-US
-date-meta: '2022-07-27'
+date-meta: '2022-08-22'
 author-meta:
 - Simon L. Dürr
 - Andrea Levy
@@ -16,12 +16,12 @@ header-includes: |-
   Suggest improvements at https://github.com/manubot/manubot/blob/main/manubot/process/header-includes-template.html
   -->
   <meta name="dc.format" content="text/html" />
-  <meta name="dc.title" content="Accurate prediction of transition metal ion location including low-homology targets via deep learning" />
-  <meta name="citation_title" content="Accurate prediction of transition metal ion location including low-homology targets via deep learning" />
-  <meta property="og:title" content="Accurate prediction of transition metal ion location including low-homology targets via deep learning" />
-  <meta property="twitter:title" content="Accurate prediction of transition metal ion location including low-homology targets via deep learning" />
-  <meta name="dc.date" content="2022-07-27" />
-  <meta name="citation_publication_date" content="2022-07-27" />
+  <meta name="dc.title" content="Accurate prediction of transition metal ion location via deep learning" />
+  <meta name="citation_title" content="Accurate prediction of transition metal ion location via deep learning" />
+  <meta property="og:title" content="Accurate prediction of transition metal ion location via deep learning" />
+  <meta property="twitter:title" content="Accurate prediction of transition metal ion location via deep learning" />
+  <meta name="dc.date" content="2022-08-22" />
+  <meta name="citation_publication_date" content="2022-08-22" />
   <meta name="dc.language" content="en-US" />
   <meta name="citation_language" content="en-US" />
   <meta name="dc.relation.ispartof" content="Manubot" />
@@ -60,7 +60,7 @@ manubot-clear-requests-cache: false
 <small><em>
 This manuscript
 was automatically generated
-on July 27, 2022. <br>View [non-interactive version on BioRxiv](doi).
+on August 22, 2022. <br>View [non-interactive version on BioRxiv](doi).
 </em></small> 
 </div>
 
@@ -173,7 +173,7 @@ We removed 56 sites from the list of zinc sites in the test set (189 total) that
 
 After assessment of how many sites the tools predict, another crucial metric is the spatial precision of the predictions. For the correctly identified sites (TP) we measured the mean absolute distance (MAD) between experimental and predicted position (Figure @fig:selectivity-mad). The MAD for Metal3D at p=0.9 is 0.70 ± 0.64 Å and 0.73 ± 0.65 Å at p=0.25 indicating that low confidence predictions are still accurately placed inside the protein. The median MAD of predictions for Metal3D at p=0.9 is 0.52 Å indicating that for half of the predictions the model predicts at or better than the grid resolution of 0.5 Å.
 
-BioMetAll is not very precise with an MAD for correctly identified sites of 2.80 ± 1.30 Å. BioMetAll predicts many possible locations per cluster with some of them much closer to the experimental metal binding site than the cluster center. However, it does not provide any ranking of the probes within a cluster and therefore the cluster center was used for the distance calculation. Metal1D (MAD 2.06 ± 1.33 Å) which identifies more sites than BioMetAll is also more precise than BioMetAll. MIB t=1.9 detects sites with high precision (MAD 0.77 ± 1.09 Å) but it relies on the existence of homologous sites to align the found sites.
+BioMetAll is not very precise with a MAD for correctly identified sites of 2.80 ± 1.30 Å. BioMetAll predicts many possible locations per cluster with some of them much closer to the experimental metal binding site than the cluster center. However, it does not provide any ranking of the probes within a cluster and therefore the cluster center was used for the distance calculation. Metal1D (MAD 2.06 ± 1.33 Å) which identifies more sites than BioMetAll is also more precise than BioMetAll. MIB t=1.9 detects sites with high precision (MAD 0.77 ± 1.09 Å) but it relies on the existence of homologous sites to align the found sites.
 
 ![**Precision of predicted sites and selectivity for Zn<sup>2+</sup>** **A** Mean absolute deviation (MAD) of predicted zinc ion locations using Metal1D, Metal3D, BioMetAll and MIB on the test set used to train Metal1D and Metal3D for all correctly identified (TP) sites. n is the number of sites predicted by the tool. *For MIB we used 2 structures less because the server did not accept these structures. For each tool the whisker plot indicates the median (white dot) and the first quartiles (black box). **B** Recall for the zinc test set and 25 randomly drawn structures for other transition, alkali and earth-alkali metal ions for Metal3D using p=0.5 as cutoff. ](images/Figure3_selectivity_mad.png){#fig:selectivity-mad}
 
@@ -344,7 +344,7 @@ The model takes as input a `(8,32,32,32)` tensor and outputs a `(1,32,32,32)` te
 Predictions for a complete protein were obtained by voxelizing select residues of the protein (default all cysteines, histidines, aspartates, glutamates) and averaging the boxes using a global grid  (Figure @fig:method B). 98 % of the metal sites in the training data have at least one of those residues closeby wherefore this significant decrease in computational cost seems appropriate for most uses.  The global grid is obtained by computing the bounding box of all points and using a regular spaced (0.5 Å) grid. For each grid point in the global grid the predicted probability maps within 0.25 Å of the grid point are averaged. The search is sped up using the KD-Tree implementation in scipy.[@doi:10.1038/s41592-019-0686-2] 
 
 ##### Metal ion placement
-The global probability density is used to perform clustering of voxels above a certain probability threshold (default p=0.5, cutoff 7 Å) using AgglomerativeClustering implemented in scikit-learn [@doi:10.48550/arXiv.1201.0490]. For each cluster the weighted average of the voxels in the cluster is computed using the probabilities for each point as the weight. This results in one metal placed per cluster.
+The global probability density is used to perform clustering of voxels above a certain probability threshold (default p=0.15, cutoff 7 Å) using AgglomerativeClustering implemented in scikit-learn [@doi:10.48550/arXiv.1201.0490]. For each cluster the weighted average of the voxels in the cluster is computed using the probabilities for each point as the weight. This results in one metal placed per cluster.
 
 ##### Visualization 
 
