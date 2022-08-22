@@ -86,7 +86,9 @@ if [ "${BUILD_DOCX:-}" = "true" ]; then
 fi
 
 
+
 if [ "${BUILD_LATEX:-}" = "true" ]; then
+
 echo >&2 "Exporting LaTeX manuscript"
 pandoc \
     --verbose \
@@ -94,6 +96,8 @@ pandoc \
     --metadata-file=output/variables.json \
     --defaults=common.yaml \
     --defaults=latex.yaml
+
 fi
+
 
 echo >&2 "Build complete"
