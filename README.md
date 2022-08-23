@@ -7,7 +7,7 @@ If using this work please cite:
 
 >Accurate prediction of transition metal ion location via deep learning
 >S.L. Dürr, A. Levy, U. Rothlisberger
->bioRxiv 2022.XXXXXXXX; doi: https://doi.org/XXXXXXXXXXXX
+>bioRxiv 2022.08.22.504853; doi: https://doi.org/10.1101/2022.08.22.504853
 
 
 # How to run predictions
