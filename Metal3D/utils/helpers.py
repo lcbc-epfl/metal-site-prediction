@@ -259,6 +259,7 @@ def find_unique_sites(
 
 def show_map(
     pdb,
+    id,
     p=0.5,
     show_sticks_all=False,
     show_sticks_metalbinding=True,
@@ -270,7 +271,9 @@ def show_map(
     Parameters
     ----------
     pdb : str
-        Name of the pdb file
+        path of the pdb file
+    id : str
+        Name of the pdb file used as identifier for the probes and cube files
     p : float
         Isovalue of the probability map
     show_sticks_all : bool
@@ -285,10 +288,10 @@ def show_map(
     """
     view = py3Dmol.view(width=1000, height=800)
 
-    view.addModel(open(pdb + ".pdb", "r").read(), "pdb")
+    view.addModel(open(pdb, "r").read(), "pdb")
     if show_probes:
-        view.addModel(open("probes_" + pdb + ".pdb", "r").read(), "pdb")
-        probes = open("probes_" + pdb + ".pdb", "r").readlines()
+        view.addModel(open("probes_" + id + ".pdb", "r").read(), "pdb")
+        probes = open("probes_" + id + ".pdb", "r").readlines()
         probabilites = [float(p[55:60]) for p in probes]  # read p from occupancy column
         colors = {}
         # use different colors for the probabilities
@@ -296,9 +299,9 @@ def show_map(
             colors[i] = "#%02x%02x%02x" % (0, 0, int(x * 255 / 2))
 
     # check file size of cube file
-    if os.path.getsize("metal_" + pdb + ".cube") < 10000000:
+    if os.path.getsize("metal_" + id + ".cube") < 10000000:
         view.addVolumetricData(
-            open("metal_" + pdb + ".cube", "r").read(),
+            open("metal_" + id + ".cube", "r").read(),
             "cube",
             {"isoval": p, "color": "blue", "opacity": 0.75},
         )
